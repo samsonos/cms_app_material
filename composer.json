@@ -1,5 +1,5 @@
 {
-    "name":"samsonos/cms/app/material",
+    "name":"samsonos/cms_app_material",
     "description":"SamsonCMS Material application",
     "author":"Vitaly Iegorov <egorov@samsonos.com>",
     "require":{
