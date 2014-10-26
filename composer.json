@@ -3,7 +3,7 @@
     "description":"SamsonCMS Material application",
     "author":"Vitaly Iegorov <egorov@samsonos.com>",
     "require":{
-        "samsonos/php_activerecord":"*"
+        "samsonos/cms_app":"*"
     },
     "license":"Open Software License (OSL) v 3.0",
     "homepage":"http://samsonos.com/",
