@@ -34,7 +34,8 @@ class MainTab extends FormTab
 		}	
 		
 		// Get user object
-		$user = isset($this->form->material->onetoone['_user']) ? $this->form->material->onetoone['_user']  : auth()->user;
+//		$user = isset($this->form->material->onetoone['_user']) ? $this->form->material->onetoone['_user']  : auth()->user;
+        $user = isset($this->form->material->onetoone['_user']) ? $this->form->material->onetoone['_user']  : m('social')->user();
 		
 		// Render content into inner content html 
 		$this->content_html = m()->view( $this->content_view )
