@@ -52,9 +52,11 @@ class FormFieldTable extends \samson\cms\table\Table
 		
 		// Save pointer to CMSMaterial
 		$this->db_material = & $db_material;
-		
+
+        $relatedStructureIDs = dbQuery('structure')->cond('type', 1)->fields('StructureID');
 		// Prepare db query for all related material fields to structures 
 		$this->query = dbQuery( 'samson\cms\cmsnavfield')
+            ->cond('StructureID', $relatedStructureIDs, dbRelation::NOT_EQUAL)
 			->join('samson\cms\cmsfield')
 			->cond(dbMySQLConnector::$prefix.'field_Type', '8', dbRelation::NOT_EQUAL)
             ->group_by(dbMySQLConnector::$prefix.'field_FieldID')
@@ -102,7 +104,7 @@ class FormFieldTable extends \samson\cms\table\Table
 	
 	/** @see \samson\cms\site\Table::row() */
 	public function row( & $db_row, Pager & $pager = null )
-	{	
+	{
 		// Get field metadata
 		$db_field = & $db_row->onetoone['_field'];
 		

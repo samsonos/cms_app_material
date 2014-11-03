@@ -120,6 +120,7 @@ class Table extends \samson\cms\table\Table
 
 		// Create DB query object
 		$this->query = dbQuery('samson\cms\cmsmaterial')
+            ->parent_id(0)
 			->Draft(0)
 			->Active(1)
 			->own_order_by('Modyfied', 'DESC')
