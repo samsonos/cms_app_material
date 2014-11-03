@@ -10,7 +10,15 @@
 	<li>
 		<label><?php t('Структура')?>:</label>
 		<select multiple name="StructureID[]" id="StructureID" class="selectify"><?php v('parent_select') ?></select>
-	</li>	
+	</li>
+    <li>
+        <label><?php t('Тип материала')?>:</label>
+        <select name="type" id="type">
+            <option value="0" <?php isval('material_type',0,'selected')?>><?php t('Стандартный материал')?></option>
+            <option value="1" <?php isval('material_type',1,'selected')?>><?php t('Составной материал')?></option>
+            <option value="2" <?php isval('material_type',2,'selected')?>><?php t('Табличный материал')?></option>
+        </select>
+    </li>
 	<li>
 		<label><?php t('Отображать на сайте')?>:</label>
 		<select name="Published" id="Published">

@@ -116,6 +116,7 @@ class MaterialApplication extends \samson\cms\App
 			
 			if( isset( $_POST['Name'] )) 		$db_material->Name = $_POST['Name'];		
 			if( isset( $_POST['Published'] )) 	$db_material->Published = $_POST['Published'];
+            if( isset( $_POST['type'] )) 	$db_material->type = $_POST['type'];
 			if( isset( $_POST['Url'] )) 		$db_material->Url = $_POST['Url'];		
 			
 			// Save object to DB

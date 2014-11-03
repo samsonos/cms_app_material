@@ -88,7 +88,7 @@ class FormFieldTable extends \samson\cms\table\Table
  			{
  				// Save materialfields object by field identifier
  				$this->materialfields[ $db_materialfield->FieldID ] = $db_materialfield;
-			}			
+			}
 		}
 
 		//db()->debug(false);
