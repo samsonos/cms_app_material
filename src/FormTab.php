@@ -145,7 +145,7 @@ class FormTab implements iModuleViewable
 		}
 				
 		// Save content view and return it
-		return $this->content_html = $content;
+		return $this->content_html = '<div id="'.$this->id.'-tab'.'">'.$content.'</div>';
 	}
 	
 	/**

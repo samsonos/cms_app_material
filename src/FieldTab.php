@@ -50,7 +50,7 @@ class FieldTab extends FormTab
 			$this->field_table = new FormFieldTable( $form->material, $form, $locale );	
 			
 			// Render tab content
-			$this->content_html = $this->field_table->render();
+			$this->content_html = $this->field_table->render(null, 'material');
 
 			// If field table is empty - clear output, we don't need empty tables
 			if($this->field_table->last_render_count == 0) {

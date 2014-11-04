@@ -58,9 +58,11 @@ class MaterialFieldTab extends FormTab
 		
 		// Call parent
 		parent::__construct( $form, $parent );
-		
+
+		//elapsed($this->content_view.'!!!!!!!!!!!!!!');
+
 		// Render CMS Field
-		$this->content_html = m()->view( $this->content_view )
+		$this->content_html = m('material')->view( $this->content_view )
 			->cmsfield( $this->cmsfield )
 		->output();		
 	}	
