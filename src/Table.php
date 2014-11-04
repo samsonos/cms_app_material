@@ -149,7 +149,7 @@ class Table extends \samson\cms\table\Table
 	}
 	
 	/** @see \samson\cms\table\Table::render() */
-	public function render( array $db_rows = null )
+	public function render( array $db_rows = null, $module = null )
 	{		
 		// If no rows is passed use generic rows
 		if( !isset( $db_rows ) ) 
