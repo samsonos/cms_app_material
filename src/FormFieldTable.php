@@ -55,7 +55,7 @@ class FormFieldTable extends \samson\cms\table\Table
 
         $relatedStructureIDs = dbQuery('structure')->cond('type', 1)->fields('StructureID');
 		// Prepare db query for all related material fields to structures 
-		$this->query = dbQuery( 'samson\cms\cmsnavfield')
+		$this->query = dbQuery( 'samson\cms\CMSNavField')
             ->cond('StructureID', $relatedStructureIDs, dbRelation::NOT_EQUAL)
 			->join('samson\cms\cmsfield')
 			->cond(dbMySQLConnector::$prefix.'field_Type', '8', dbRelation::NOT_EQUAL)

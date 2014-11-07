@@ -23,7 +23,7 @@ class MainTab extends FormTab
 	{		
 		// Iterate all loaded CMSNavs
 		$parent_select = '';
-		foreach ( dbQuery('samson\cms\cmsnav')->exec() as $db_structure )
+		foreach ( dbQuery('samson\cms\CMSNav')->exec() as $db_structure )
 		{			
 			// If material is related to current CMSNav
 			$selected = '';
