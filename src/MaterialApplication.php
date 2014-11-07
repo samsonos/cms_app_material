@@ -123,7 +123,7 @@ class MaterialApplication extends \samson\cms\App
 			$db_material->save();
 			
 			// Clear existing relations between material and cmsnavs
-			foreach ( dbQuery('samson\cms\CMSNavmaterial')->MaterialID( $db_material->id )->exec() as $cnm ) $cnm->delete();
+			foreach ( dbQuery('samson\cms\CMSNavMaterial')->MaterialID( $db_material->id )->exec() as $cnm ) $cnm->delete();
 			
 			// Iterate relations between material and cmsnav
 			if( isset( $_POST['StructureID'] )) foreach( $_POST['StructureID'] as $cmsnav_id )

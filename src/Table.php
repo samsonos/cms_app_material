@@ -138,7 +138,7 @@ class Table extends \samson\cms\table\Table
         }*/
 
 		// Perform query by cmsnavmaterial and get material ids
-		if( isset($nav) && dbQuery('samson\cms\CMSNavmaterial')->StructureID( $nav->id )->Active( 1 )->fields('MaterialID', $ids))
+		if( isset($nav) && dbQuery('samson\cms\CMSNavMaterial')->StructureID( $nav->id )->Active( 1 )->fields('MaterialID', $ids))
 		{
 			// Set corresponding material ids related to specified cmsnav
 			$this->query->id($ids);				
