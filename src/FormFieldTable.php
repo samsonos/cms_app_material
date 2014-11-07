@@ -53,21 +53,23 @@ class FormFieldTable extends \samson\cms\table\Table
 		// Save pointer to CMSMaterial
 		$this->db_material = & $db_material;
 
+        // Get all related structures
         $relatedStructureIDs = dbQuery('structure')->cond('type', 1)->fields('StructureID');
+
 		// Prepare db query for all related material fields to structures 
 		$this->query = dbQuery( 'samson\cms\CMSNavField')
-            ->cond('StructureID', $relatedStructureIDs, dbRelation::NOT_EQUAL)
-			->join('samson\cms\CMSField')
+            ->cond('StructureID', $relatedStructureIDs, dbRelation::NOT_EQUAL) // Remove related structure fields from field table
 			->cond(dbMySQLConnector::$prefix.'field_Type', '8', dbRelation::NOT_EQUAL)
+            ->join('samson\cms\CMSField')
             ->group_by(dbMySQLConnector::$prefix.'field_FieldID')
 			->order_by('FieldID', 'ASC')
 			->Active(1);
 		
-		// If material has related structures
-		$structure_id = array_keys($form->navs);
-		
-		// Add them to query
-		$this->query->StructureID( $structure_id );
+		// If material has related structures add them to query
+		$structureIDs = array_keys($form->navs);
+		if(sizeof($structureIDs)) {
+            $this->query->StructureID($structureIDs);
+        }
 		
 		// Create materialfield db query
 		$mfQuery = dbQuery('materialfield')	
