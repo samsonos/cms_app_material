@@ -79,7 +79,7 @@ class Form
 			{
 				// WYSIWYG query
 				$fields_query = dbQuery( '\samson\cms\CMSNavField')
-					->join('\samson\cms\cmsfield')
+					->join('\samson\cms\CMSField')
 					->order_by('FieldID', 'ASC')
 					->Active(1);
 				

@@ -2,7 +2,7 @@
 namespace samson\cms\web\material;
 
 use samson\core\SamsonLocale;
-use samson\cms\cmsfield;
+use samson\cms\CMSField;
 
 /** 
  * @author Egorov Vitaly <egorov@samsonos.com>
