@@ -64,7 +64,7 @@ class FormFieldTable extends \samson\cms\table\Table
         // Get all related structures and remove them from request
         $relatedStructureIDs = dbQuery('structure')->cond('type', 1)->fields('StructureID');
         if (sizeof($relatedStructureIDs)) {
-            $this->query->cond('StructureID', $relatedStructureIDs, dbRelation::NOT_EQUAL) // Remove related structure fields from field table
+            $this->query->cond('StructureID', $relatedStructureIDs, dbRelation::NOT_EQUAL); // Remove related structure fields from field table
         }
 
 		// If material has related structures add them to query
