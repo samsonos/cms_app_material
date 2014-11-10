@@ -143,9 +143,16 @@ class FormTab implements iModuleViewable
 				$content .= m()->view( $this->content_view )->tab( $tab )->output();				
 			}
 		}
-				
-		// Save content view and return it
-		return $this->content_html = '<div id="'.$this->id.'-tab'.'" class="tab-group-content">'.$content.'</div>';
+
+        // If we have any inner tab content
+        if (isset($content{0})) {
+            $this->content_html = '<div id="'.$this->id.'-tab'.'" class="tab-group-content">'.$content.'</div>';
+        } else {
+            $this->content_html = $content;
+        }
+
+        // Save content view and return it
+		return $this->content_html;
 	}
 	
 	/**
