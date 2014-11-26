@@ -14,7 +14,7 @@
 	<td class="structure">
 		<?php if(isv('navs')) foreach ($navs as $structure ):?>			
 			<a class="inner" title="<?php t('Перейти к материалам ЭСС')?>" href="<?php url_base('structure',$structure->id)?>">
-				<?php $structure->Name()?>
+				<?php echo $structure->Name ?>
 			</a>
 		<?php endforeach;?>
 	</td>
