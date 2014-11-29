@@ -161,29 +161,8 @@ class MaterialApplication extends \samson\cms\App
 		// Generate materials table		
 		$table = new Table($cmsnav, $search, $page);
 
-        // Add aditional material fields
-        $ocg = new dbConditionGroup('OR');
-        foreach ( cms()->material_fields as $f) {
-            // Create special condition for additional fields
-            $cg = new dbConditionGroup('AND');
-            $cg->arguments[] = new dbConditionArgument('_mf.FieldID', $f->FieldID);
-
-            if (isset($search) && $search != 'no-search') {
-                $cg->arguments[] = new dbConditionArgument('_mf.Value', '%'.$search.'%', dbRelation::LIKE );
-            }
-
-            $ocg->arguments[] = $cg;
-        }
-
-        // Add condition group
-        $table->search_fields[] = $ocg;
-
-        $table_html = $table->render();
-
-        $pager_html = $table->pager->toHTML();
-
 		// Render table and pager
-		return array('status' => 1, 'table_html' => $table_html, 'pager_html' => $pager_html);
+		return array('status' => 1, 'table_html' => $table->render(), 'pager_html' => $table->pager->toHTML());
 	}
 
 	/**

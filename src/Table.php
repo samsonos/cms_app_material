@@ -32,7 +32,7 @@ class Table extends \samson\cms\table\Table
     protected $single_drafts = array();
 
     /** Search material fields */
-    public $search_fields = array( 'Name', 'Url'  );
+    public $search_fields = array('Name', 'Url');
 
     /** Default table template file */
     public $table_tmpl = 'table/index';
@@ -92,14 +92,47 @@ class Table extends \samson\cms\table\Table
         // Create pager
         $this->pager = new \samson\pager\Pager($page, self::ROWS_COUNT, $prefix);
 
+        // Collection of filtered material identifiers
+        $filteredIDs = array();
+
+        // If search filter is set - add search condition to query
+        if (isset($this->search) || sizeof($this->search_fields)) {
+            // Create additional fields query
+            $searchQuery = dbQuery('materialfield')->join('material');
+
+            // Create or condition
+            $searchCondition = new Condition('OR');
+
+            // Iterate all possible material fields
+            foreach (cms()->material_fields as $f) {
+                // Create special condition for additional field
+                $cg = new Condition('AND');
+                $cg->add(new Argument('FieldID', $f->FieldID))
+                ->add(new Argument('Value', '%' . $search . '%', dbRelation::LIKE));
+
+                // Add new condition to group
+                $searchCondition->add($cg);
+            }
+
+            // Add all search conditions from material table
+            foreach ($this->search_fields as $item) {
+                $searchCondition->add(new Argument('material_'.$item, '%'.$search.'%', dbRelation::LIKE));
+            }
+
+            // Set condition
+            $searchQuery->cond($searchCondition);
+
+            // Get filtered identifiers
+            $filteredIDs = $searchQuery->fieldsNew('MaterialID');
+        }
+
         // Create DB query object
-        $this->query = dbQuery('material')
+        $this->query = dbQuery('\samson\activerecord\material')
             ->cond('parent_id', 0)
             ->cond('Draft', 0)
             ->cond('Active', 1)
             ->own_order_by('Modyfied', 'DESC')
         ;
-
 
         // Perform query by structure-material and get material ids
         $ids = array();
@@ -107,7 +140,13 @@ class Table extends \samson\cms\table\Table
                 ->cond('StructureID', $nav->id)
                 ->cond('Active', 1)->fields('MaterialID', $ids)) {
             // Set corresponding material ids related to specified navigation
-            $this->query->id($ids);
+            $filteredIDs = array_merge($filteredIDs, $ids);
+        }
+
+        // If we have filtration identifiers
+        if (sizeof($filteredIDs)) {
+            // Add the, to query
+            $this->query->id($filteredIDs);
         }
 
         // Call parent constructor
@@ -119,12 +158,8 @@ class Table extends \samson\cms\table\Table
     {
         // If no rows is passed use generic rows
         if (!isset($rows)) {
-            // If search filter is set - add search condition to query
-            if (isset($this->search)) {
-                $this->prepareSearchCondition($this->search);
-            }
 
-            //db()->debug();
+            //db()->debug(false);
             /** @var \samson\cms\Material[] $materials Get original materials */
             $materials = array();
             if ($this->query->exec($materials)) {
