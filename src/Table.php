@@ -47,32 +47,6 @@ class Table extends \samson\cms\table\Table
     public $empty_tmpl = 'table/row/empty';
 
     /**
-     * Prepare DB query search condition by keywords
-     * @param string $keywords Keywords condition to add to query
-     */
-    private function prepareSearchCondition($keywords)
-    {
-        // If keywords has chars
-        if (isset($keywords{0})) {
-            // Create condition group
-            $scg = new Condition('or');
-
-            // Iterate base material and nav fields to generate search conditions
-            foreach ($this->search_fields as $item) {
-                // If condition group is passed - add it to search condition
-                if (is_a($item, \samson\core\Autoloader::className('Condition', 'samson\activerecord'))) {
-                    $scg->arguments[] = $item;
-                } else {// Create condition argument
-                    $scg->arguments[] = new Argument($item, '%'.$keywords.'%', dbRelation::LIKE);
-                }
-            }
-
-            // Add query condition
-            $this->query->own_condition->arguments[] = $scg;
-        }
-    }
-
-    /**
      * Constructor
      * @param Navigation $nav 		Parent CMSNav to filter materials
      * @param string $search	Keywords to search in materials
