@@ -70,7 +70,7 @@ class Table extends \samson\cms\table\Table
         $filteredIDs = array();
 
         // If search filter is set - add search condition to query
-        if (isset($this->search) || sizeof($this->search_fields)) {
+        if (isset($this->search)) {
             // Create additional fields query
             $searchQuery = dbQuery('materialfield')->join('material');
 
