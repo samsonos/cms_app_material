@@ -63,8 +63,12 @@ class FormFieldTable extends \samson\cms\table\Table
 
         // Get all related structures and remove them from request
         $relatedStructureIDs = dbQuery('structure')->cond('type', 1)->fields('StructureID');
-        if (sizeof($relatedStructureIDs)) {
-            $this->query->cond('StructureID', $relatedStructureIDs, dbRelation::NOT_EQUAL); // Remove related structure fields from field table
+
+        if ($db_material->type != 0 && sizeof($relatedStructureIDs)) {
+            $fieldsIDs = dbQuery('structurefield')->cond('StructureID',$relatedStructureIDs)->fields('FieldID');
+            if (sizeof($fieldsIDs)) {
+                $this->query->cond('FieldID', $fieldsIDs, dbRelation::NOT_EQUAL); // Remove related structure fields from field table
+            }
         }
 
 		// If material has related structures add them to query
@@ -152,4 +156,56 @@ class FormFieldTable extends \samson\cms\table\Table
 			->pager( $pager )
 		->output();
 	}
+
+    public function render( array $db_rows = null, $module = null)
+    {
+        // Rows HTML
+        $rows = '';
+
+        // if no rows data is passed - perform db request
+        if( !isset($db_rows) )	$db_rows = $this->query->exec();
+
+        // If we have table rows data
+        if( is_array($db_rows ) )
+        {
+            // Save quantity of rendering rows
+            $this->last_render_count = sizeof($db_rows);
+
+            // Debug info
+            $rn = 0;
+            $rc = sizeof($db_rows);
+
+            // Iterate db data and perform rendering
+            foreach( $db_rows as & $db_row )
+            {
+                if($this->debug ) elapsed('Rendering row '.$rn++.' of '.$rc.'(#'.$db_row->id.')');
+                $rows .= $this->row( $db_row, $this->pager );
+                //catch(\Exception $e){ return e('Error rendering row#'.$rn.' of '.$rc.'(#'.$db_row->id.')'); }
+            }
+
+            // If material is not related - render remains field
+            if ($this->db_material->type == 0) {
+                // Create input element for field
+                $input = Field::fromObject( $this->db_material, 'remains', 'Field' );
+
+                $rows .= m('material')
+                    ->view( $this->row_tmpl )
+                    ->cmsfield( $input )
+                    ->fieldname(t('Остаток', true))
+                    ->output();
+            }
+
+        }
+        // No data found after query, external render specified
+        else $rows .= $this->emptyrow( $this->query, $this->pager );
+
+        //elapsed('render pages: '.$this->pager->total);
+
+        // Render table view
+        return m($module)
+            ->view( $this->table_tmpl )
+            ->set( $this->pager )
+            ->rows( $rows )
+            ->output();
+    }
 }
