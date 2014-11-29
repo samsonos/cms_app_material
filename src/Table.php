@@ -61,7 +61,7 @@ class Table extends \samson\cms\table\Table
         $this->search = $search;
 
         // Generate pager url prefix
-        $prefix = 'material/table/'.(isset($nav) ? $nav->id : '0').'/'.(isset($search{0}) ? $search : 'no-search').'/';
+        $prefix = 'material/table/'.(isset($nav) ? $nav->id : '0').'/'.(isset($search{0}) ? $search : '0').'/';
 
         // Create pager
         $this->pager = new \samson\pager\Pager($page, self::ROWS_COUNT, $prefix);
@@ -70,7 +70,7 @@ class Table extends \samson\cms\table\Table
         $filteredIDs = array();
 
         // If search filter is set - add search condition to query
-        if (isset($this->search)) {
+        if (isset($this->search{0}) && $this->search != '0') {
             // Create additional fields query
             $searchQuery = dbQuery('materialfield')->join('material');
 
