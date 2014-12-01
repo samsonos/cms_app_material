@@ -60,8 +60,7 @@ class Table extends \samson\cms\table\Table
         // Save search keywords
         $this->search = $search;
 
-        // Generate pager url prefix
-        $prefix = 'material/table/'.(isset($nav) ? $nav->id : '0').'/'.(isset($search{0}) ? $search : '0').'/';
+        $prefix = $this->setPagerPrefix();
 
         // Create pager
         $this->pager = new \samson\pager\Pager($page, self::ROWS_COUNT, $prefix);
@@ -123,8 +122,22 @@ class Table extends \samson\cms\table\Table
             $this->query->id($filteredIDs);
         }
 
+        $this->queryHandler();
+
         // Call parent constructor
         parent::__construct($this->query, $this->pager);
+    }
+
+
+    public function queryHandler()
+    {
+        return $this->query;
+    }
+
+    public function setPagerPrefix()
+    {
+        // Generate pager url prefix
+        return 'material/table/'.(isset($this->nav) ? $this->nav->id : '0').'/'.(isset($this->search{0}) ? $this->search : '0').'/';
     }
 
     /** @see \samson\cms\table\Table::render() */
