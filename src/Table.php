@@ -81,7 +81,7 @@ class Table extends \samson\cms\table\Table
                 // Create special condition for additional field
                 $cg = new Condition('AND');
                 $cg->add(new Argument('FieldID', $f->FieldID))
-                ->add(new Argument('Value', '%' . $search . '%', dbRelation::LIKE));
+                    ->add(new Argument('Value', '%' . $search . '%', dbRelation::LIKE));
 
                 // Add new condition to group
                 $searchCondition->add($cg);
@@ -113,7 +113,7 @@ class Table extends \samson\cms\table\Table
                 ->cond('StructureID', $nav->id)
                 ->cond('Active', 1)->fields('MaterialID', $ids)) {
             // Set corresponding material ids related to specified navigation
-            $filteredIDs = array_merge($filteredIDs, $ids);
+            $filteredIDs = array_intersect($filteredIDs, $ids);
         }
 
         // If we have filtration identifiers
@@ -128,6 +128,20 @@ class Table extends \samson\cms\table\Table
         parent::__construct($this->query, $this->pager);
     }
 
+    public function beforeHandler() {
+        $ids = $this->query->fieldsNew('MaterialID');
+
+        $this->query = dbQuery('\samson\cms\material')
+                        ->join('user')
+                        ->join('structurematerial')
+                        ->join('samson\cms\Navigation');
+
+        if (sizeof($ids)) {
+            $this->query->id($ids);
+        } else {
+            $this->query->id(0);
+        }
+    }
 
     public function queryHandler()
     {
@@ -138,51 +152,6 @@ class Table extends \samson\cms\table\Table
     {
         // Generate pager url prefix
         return 'material/table/'.(isset($this->nav) ? $this->nav->id : '0').'/'.(isset($this->search{0}) ? $this->search : '0').'/';
-    }
-
-    /** @see \samson\cms\table\Table::render() */
-    public function render(array $rows = null, $module = null)
-    {
-        // If no rows is passed use generic rows
-        if (!isset($rows)) {
-
-            //db()->debug(false);
-            /** @var \samson\cms\Material[] $materials Get original materials */
-            $materials = array();
-            if ($this->query->exec($materials)) {
-
-                // Get all materials with joined data
-               $materials = dbQuery('\samson\cms\material')
-                    ->id(array_keys($materials)) // Pass all material identifiers
-                    ->join('user')
-                    ->join('structurematerial')
-                    ->join('samson\cms\Navigation')
-                ->exec();
-
-                // Generic rendering routine
-                return parent::render($materials);
-            } else { // Query failed
-                // Render empty or not found row content
-                $row = '';
-                if (!isset($this->search{0})) {
-                    $row = $this->emptyrow($this->query, $this->pager);
-                } else { // Not found
-                    $row = m()->output($this->notfound_tmpl);
-                }
-
-                // Manually render table
-                return m()
-                    ->view($this->table_tmpl)
-                    ->set($this->pager)
-                    ->rows($row)
-                ->output();
-            }
-
-            //db()->debug(false);
-        }
-
-        // Perform table rendering
-        return parent::render($rows);
     }
 
     /** @see \samson\cms\table\Table::row() */
@@ -203,6 +172,6 @@ class Table extends \samson\cms\table\Table
             ->pager($this->pager)
             ->nav_id(isset($this->nav) ? $this->nav->id : '0')
             ->search(urlencode($this->search))
-        ->output();
+            ->output();
     }
 }
