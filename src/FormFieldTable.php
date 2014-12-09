@@ -53,7 +53,7 @@ class FormFieldTable extends \samson\cms\table\Table
 		// Save pointer to CMSMaterial
 		$this->db_material = & $db_material;
 
-		// Prepare db query for all related material fields to structures 
+		// Prepare db query for all related material fields to structures
 		$this->query = dbQuery( 'samson\cms\CMSNavField')
 			->cond(dbMySQLConnector::$prefix.'field_Type', array('8', '5'), dbRelation::NOT_EQUAL)
             ->join('samson\cms\CMSField')
@@ -62,7 +62,7 @@ class FormFieldTable extends \samson\cms\table\Table
 			->Active(1);
 
         // Get all related structures and remove them from request
-        $relatedStructureIDs = dbQuery('structure')->cond('type', array(1, 2))->fields('StructureID');
+        $relatedStructureIDs = dbQuery('structure')->cond('type', 1)->fields('StructureID');
 
         if ($db_material->type != 0 && sizeof($relatedStructureIDs)) {
             $fieldsIDs = dbQuery('structurefield')->cond('StructureID',$relatedStructureIDs)->fields('FieldID');
@@ -71,8 +71,15 @@ class FormFieldTable extends \samson\cms\table\Table
             }
         }
 
+        // Delete table structures from query
+        $navs = $form->navs;
+        foreach ($navs as $key => $nav) {
+            if ($nav->type == 2) {
+                unset($navs[$key]);
+            }
+        }
 		// If material has related structures add them to query
-		$structureIDs = array_keys($form->navs);
+		$structureIDs = array_keys($navs);
 		if(sizeof($structureIDs)) {
             $this->query->StructureID($structureIDs);
         }
