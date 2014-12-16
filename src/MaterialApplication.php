@@ -1,19 +1,8 @@
 <?php
 namespace samson\cms\web\material;
 
-use samson\activerecord\dbRelation;
-use samson\activerecord\dbConditionArgument;
-use samson\activerecord\dbConditionGroup;
-use samson\cms\cmsmaterial;
-use samson\cms\CMSNav;
-use samson\activerecord\dbQuery;
-use samson\pager\Pager;
 use samson\cms\CMSNavMaterial;
 use samsonos\cms\ui\MenuItem;
-
-require '../vendor/samsonos/cms_ui/src/Container.php';
-require '../vendor/samsonos/cms_ui/src/Form.php';
-require '../vendor/samsonos/cms_ui/src/TabView.php';
 
 /**
  * SamsonCMS generic material application.
