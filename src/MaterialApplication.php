@@ -2,7 +2,7 @@
 namespace samson\cms\web\material;
 
 use samson\cms\CMSNavMaterial;
-use samsonos\cms\ui\MenuItem;
+/*use samsonos\cms\ui\MenuItem;*/
 
 /**
  * SamsonCMS generic material application.
@@ -28,7 +28,7 @@ class MaterialApplication extends \samson\cms\App
      * @param \samsonos\cms\ui\Menu $menu Pointer to menu container
      * @param \samsonos\cms\ui\Container $workspace Pointer to main container
      */
-    public function uiMainMenu(&$menu, &$workspace)
+    /*public function uiMainMenu(&$menu, &$workspace)
     {
         // Create site item
         $siteItem = new MenuItem($menu);
@@ -36,14 +36,14 @@ class MaterialApplication extends \samson\cms\App
             ->set('class', 'btn-application')
             ->set('content', '<a href="'.url()->build($this->id).'">'.t($this->app_name, true).'</a>')
         ;
-    }
+    }*/
 
     /**
      * Handler for rendering UI main-menu
      * @param \samsonos\cms\ui\Menu $menu Pointer to menu container
      * @param \samsonos\cms\ui\Container $workspace Pointer to main container
      */
-    public function uiSubMenu(&$menu, &$workspace)
+    /*public function uiSubMenu(&$menu, &$workspace)
     {
         // Create site item
         $showAll = new MenuItem($menu);
@@ -56,7 +56,7 @@ class MaterialApplication extends \samson\cms\App
         $addNew->set('title', t('Создать новый материал для веб-сайта', true))
             ->set('content', '<a href="'.url()->build($this->id, 'form', 0, 0).'">'.t('Новый материал', true).'</a>')
         ;
-    }
+    }*/
 
     /**
      * Module initialization
@@ -65,10 +65,10 @@ class MaterialApplication extends \samson\cms\App
      */
     public function init(array $params = array())
     {
-        // Subscribe for main-menu rendering
+       /* // Subscribe for main-menu rendering
         \samson\core\Event::subscribe('cms_ui.mainmenu_leftcreated', array($this, 'uiMainMenu'));
         // Subscribe for sub-menu rendering
-        \samson\core\Event::subscribe('cms_ui.submenu_created', array($this, 'uiSubMenu'));
+        \samson\core\Event::subscribe('cms_ui.submenu_created', array($this, 'uiSubMenu'));*/
 
         return parent::init($params);
     }
