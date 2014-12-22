@@ -113,7 +113,11 @@ class Table extends \samson\cms\table\Table
                 ->cond('StructureID', $nav->id)
                 ->cond('Active', 1)->fields('MaterialID', $ids)) {
             // Set corresponding material ids related to specified navigation
-            $filteredIDs = array_intersect($filteredIDs, $ids);
+            if (sizeof($filteredIDs)) {
+                $filteredIDs = array_intersect($filteredIDs, $ids);
+            } else {
+                $filteredIDs = $ids;
+            }
         }
 
         // If we have filtration identifiers
