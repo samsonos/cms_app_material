@@ -6,6 +6,7 @@
 	</h1>
 	
 	<form id="material_editor" class="material-form" method="POST" action="<?php module_url('save');?>" enctype="multipart/form-data" accept-charset="UTF-8">
+        <input type="hidden" id="appName" value="material">
 		<input type="hidden" name="iehack" value="&#9760;" />
 		<input type="hidden" name="MaterialID" id="MaterialID" value="<?php v('cmsmaterial_id'); ?>">
 		<input type="hidden" name="Draft" id="Draft" value="<?php v('cmsmaterial_Draft'); ?>">	

@@ -8,7 +8,7 @@ var formInit = function()
 	s('#material-tabs').tabs();
 	
 	// Make CMSNav beatiful select
-	s('.selectify').selectify();	
+	s('.selectify').selectify();
 
 	// Material name field
 	var name_field = s('#Name');
@@ -45,7 +45,7 @@ var saveMain = function( redirect )
 	form.ajaxForm(function(response)
 	{	
 		// Redirect
-		if( redirect == true ) window.location.href = 'material';
+		if( redirect == true ) window.location.href = s('#appName').val();
 		// Rerender form
 		else
 		{			
