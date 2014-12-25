@@ -75,6 +75,8 @@ class Table extends \samson\cms\table\Table
         // Collection of filtered material identifiers
         $filteredIDs = array();
 
+        $searchOrStructureFlag = false;
+
         // If search filter is set - add search condition to query
         if (isset($this->search{0}) && $this->search != '0') {
             // Create additional fields query
@@ -104,6 +106,7 @@ class Table extends \samson\cms\table\Table
 
             // Get filtered identifiers
             $filteredIDs = $searchQuery->fieldsNew('MaterialID');
+            $searchOrStructureFlag = true;
         }
 
         // Create DB query object
@@ -120,13 +123,20 @@ class Table extends \samson\cms\table\Table
                 ->cond('StructureID', $nav->id)
                 ->cond('Active', 1)->fields('MaterialID', $ids)) {
             // Set corresponding material ids related to specified navigation
-            $filteredIDs = array_intersect($filteredIDs, $ids);
+            if (sizeof($filteredIDs)) {
+                $filteredIDs = array_intersect($filteredIDs, $ids);
+            } else {
+                $filteredIDs = $ids;
+            }
+            $searchOrStructureFlag = true;
         }
 
         // If we have filtration identifiers
         if (sizeof($filteredIDs)) {
             // Add the, to query
             $this->query->id($filteredIDs);
+        } elseif($searchOrStructureFlag) {
+            $this->query->id(0);
         }
 
         $this->queryHandler();
