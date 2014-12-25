@@ -111,6 +111,25 @@ class MaterialApplication extends \samson\cms\App
     /** Generic material form controller */
     public function __form( $material_id = null, $cmsnav = null )
     {
+        // If this is form for a new material with structure relation
+        if ($material_id == 0 && isset($cmsnav)) {
+            // Create new material db record
+            $material = new \samson\cms\CMSMaterial(false);
+            $material->Active = 1;
+            $material->save();
+
+            // Create relation with structure
+            $structureMaterial = new \samson\activerecord\structurematerial(false);
+            $structureMaterial->MaterialID = $material->id;
+            $structureMaterial->StructureID = $cmsnav;
+            $structureMaterial->Active = 1;
+            $structureMaterial->save();
+            //trace ($structureMaterial, true);
+
+            // Set new material as current
+            $material_id = $material->id;
+        }
+
         // Create form object
         $form = new \samson\cms\web\material\Form( $material_id, $cmsnav );
 
