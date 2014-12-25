@@ -15,7 +15,7 @@ use samson\cms\CMSNavMaterial;
 class MaterialApplication extends \samson\cms\App
 {
     /** Application name */
-    public $app_name = 'Материалы';
+    public $name = 'Материалы';
 
     /** Identifier */
     protected $id = 'material';
@@ -79,10 +79,10 @@ class MaterialApplication extends \samson\cms\App
     public function __handler($cmsnav = null, $search = null, $page = null)
     {
         // Generate localized title
-        $title = t($this->app_name, true);
+        $title = t($this->name, true);
 
         // Set view scope
-        $this->view('index');
+        $renderer = $this->view('index');
 
         // Try to find cmsnav
         if (isset($cmsnav) && dbQuery('\samson\cms\Navigation')->id($cmsnav)->first($cmsnav)) {
@@ -97,10 +97,11 @@ class MaterialApplication extends \samson\cms\App
         $search = !isset($search) ? (isset($_POST['search']) ? $_POST['search'] : '') : $search;
 
         if (!isset($cmsnav)) {
-            m()->all_materials(true);
+            $this->all_materials(true);
         }
+
         // Set view data
-        $this
+        $renderer
             ->title($title)
             ->search($search)
             ->set($this->__async_table($cmsnav, $search, $page))
@@ -114,10 +115,10 @@ class MaterialApplication extends \samson\cms\App
         $form = new \samson\cms\web\material\Form( $material_id, $cmsnav );
 
         if ($material_id == 0) {
-            m()->new_material(true);
+            $this->new_material(true);
         }
         // Render form
-        m()->html( $form->render() );
+        $this->html( $form->render() );
     }
 
     /** Main logic */
@@ -203,7 +204,7 @@ class MaterialApplication extends \samson\cms\App
         }
 
         // Generate materials table
-        $table = new Table($cmsnav, $search, $page);
+        $table = new Table($cmsnav, $search, $page, $this);
 
         // Render table and pager
         return array('status' => 1, 'table_html' => $table->render(), 'pager_html' => $table->pager->toHTML());
@@ -299,7 +300,7 @@ class MaterialApplication extends \samson\cms\App
             }
 
             // Render main template
-            return $this->rows( $rows_html )->output('main/index');
+            return $this->view('main/index')->rows( $rows_html )->output();
         }
     }
 }

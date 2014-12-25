@@ -17,7 +17,7 @@ use samson\activerecord\dbMySQLConnector;
 class Table extends \samson\cms\table\Table
 {
     /** Table rows count */
-    const ROWS_COUNT = 15;
+    const ROWS_COUNT = 20;
 
     /** Parent materials CMSNav */
     protected $nav;
@@ -46,16 +46,23 @@ class Table extends \samson\cms\table\Table
     /** Default table empty row template */
     public $empty_tmpl = 'table/row/empty';
 
+    /** @var \samson\core\IViewable $renderer Table renderer */
+    public $renderer;
+
     /**
      * Constructor
-     * @param Navigation $nav 		Parent CMSNav to filter materials
-     * @param string $search	Keywords to search in materials
-     * @param string $page		Current table page number
+     * @param Navigation $nav Parent CMSNav to filter materials
+     * @param string $search Keywords to search in materials
+     * @param string $page Current table page number
+     * @param \samson\core\IViewable $renderer Table renderer
      */
-    public function __construct(Navigation & $nav = null, $search = null, $page = null)
+    public function __construct(Navigation & $nav = null, $search = null, $page = null, $renderer = null)
     {
         // Save parent cmsnav
         $this->nav = & $nav;
+
+        // Set current module or use passed renderer
+        $this->renderer = isset($renderer) ? $renderer : m();
 
         // Save search keywords
         $this->search = $search;
@@ -67,8 +74,6 @@ class Table extends \samson\cms\table\Table
 
         // Collection of filtered material identifiers
         $filteredIDs = array();
-
-        $searchOrStructureFlag = false;
 
         // If search filter is set - add search condition to query
         if (isset($this->search{0}) && $this->search != '0') {
@@ -99,7 +104,6 @@ class Table extends \samson\cms\table\Table
 
             // Get filtered identifiers
             $filteredIDs = $searchQuery->fieldsNew('MaterialID');
-            $searchOrStructureFlag = true;
         }
 
         // Create DB query object
@@ -116,26 +120,19 @@ class Table extends \samson\cms\table\Table
                 ->cond('StructureID', $nav->id)
                 ->cond('Active', 1)->fields('MaterialID', $ids)) {
             // Set corresponding material ids related to specified navigation
-            if (sizeof($filteredIDs)) {
-                $filteredIDs = array_intersect($filteredIDs, $ids);
-            } else {
-                $filteredIDs = $ids;
-            }
-            $searchOrStructureFlag = true;
+            $filteredIDs = array_intersect($filteredIDs, $ids);
         }
 
         // If we have filtration identifiers
         if (sizeof($filteredIDs)) {
             // Add the, to query
             $this->query->id($filteredIDs);
-        } elseif($searchOrStructureFlag) {
-            $this->query->id(0);
         }
 
         $this->queryHandler();
 
         // Call parent constructor
-        parent::__construct($this->query, $this->pager);
+        parent::__construct($this->query, $this->pager, $this->renderer);
     }
 
     public function beforeHandler() {
@@ -168,15 +165,15 @@ class Table extends \samson\cms\table\Table
     public function row(& $material, Pager & $pager = null)
     {
         // Set table row view context
-        m()->view($this->row_tmpl);
+        $renderer = $this->renderer->view($this->row_tmpl);
 
         // If there is navigation for material - pass them
         if (isset($material->onetomany['_structure'])) {
-            m()->navs($material->onetomany['_structure']);
+            $this->renderer->navs($material->onetomany['_structure']);
         }
 
         // Render row template
-        return m()
+        return $renderer
             ->cmsmaterial($material)
             ->user(isset($material->onetoone['_user']) ? $material->onetoone['_user'] : '')
             ->pager($this->pager)
