@@ -27,7 +27,10 @@ var formInit = function()
 	s('#btnSave').click(function(){saveMain( true );},true,true);
 	
 	// Apply button logic
-	s('#btnApply').click( saveMain,true,true);	
+	s('#btnApply').click( saveMain,true,true);
+    s('.field_table').pageInit(function(asd){
+        asd.fixedHeader();
+    });
 };
 
 
