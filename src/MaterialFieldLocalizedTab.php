@@ -30,7 +30,7 @@ class MaterialFieldLocalizedTab extends FormTab
 	public function __construct( Form & $form, cmsfield & $db_field, $field_type )
 	{			
 		// Set field header name
-		$this->name = $db_field->Name;
+		$this->name = !empty($db_field->Description) ? $db_field->Description : $db_field->Name;
 		
 		// Save pointers to database field object
 		$this->db_field = & $db_field;
