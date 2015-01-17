@@ -28,8 +28,14 @@ var formInit = function()
 	
 	// Apply button logic
 	s('#btnApply').click( saveMain,true,true);
-    s('.field_table').pageInit(function(asd){
-        asd.fixedHeader();
+
+    // Make fixed header to additional fields
+    s('.field_table').pageInit(function(header){
+        var tab = $('.field_table').parents('.tab-content');
+        var shownBefore = tab.css('display');
+        tab.show();
+        header.fixedHeader();
+        tab.css('display', shownBefore);
     });
 };
 
