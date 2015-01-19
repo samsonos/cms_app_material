@@ -12,7 +12,7 @@ namespace samsonos\cms\app\material;
  * Collection of materials
  * @package samsonos\cms\app\material
  */
-class Collection extends \samson\cms\GenericCollection
+class Collection extends \samsonos\cms\collection\Generic
 {
     /** @var array Collection of structure to get products */
     protected $structures = array();
