@@ -27,7 +27,7 @@ var formInit = function()
 	s('#btnSave').click(function(){saveMain( true );},true,true);
 	
 	// Apply button logic
-	s('#btnApply').click( saveMain,true,true);
+	s('#btnApply').click(function(){saveMain( true );}, true, true);
 
     // Make fixed header to additional fields
     s('.field_table').pageInit(function(header){
@@ -54,7 +54,7 @@ var saveMain = function( redirect )
 	form.ajaxForm(function(response)
 	{	
 		// Redirect
-		if( redirect == true ) window.location.href = s('#appName').val();
+		if( redirect == true ) window.location.href = s('#appName').val() + '/form/' + s('#MaterialID').val();
 		// Rerender form
 		else
 		{			
