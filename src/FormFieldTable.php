@@ -151,7 +151,8 @@ class FormFieldTable extends \samson\cms\table\Table
 			case '3': $input = Field::fromObject( $db_mf, 'Value', 'Date' );	break;
             case '6': $input = Field::fromObject( $db_mf, 'Value', 'Material' );	break;
 			case '7': $input = Field::fromObject( $db_mf, 'numeric_value', 'Number' );	break;
-			case '8': return false;//$this->form->tabs[] = new WysiwygTab( $this->form, $db_field, $db_mf, $this->locale ); return false;	
+			case '8': return false;//$this->form->tabs[] = new WysiwygTab( $this->form, $db_field, $db_mf, $this->locale ); return false;
+            case '9': return false; break;
 			default: $input = Field::fromObject( $db_mf, 'Value', 'Field' );
 		}	
 		
