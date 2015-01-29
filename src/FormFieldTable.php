@@ -157,7 +157,7 @@ class FormFieldTable extends \samson\cms\table\Table
 		}	
 		
 		// Render field row
-		return m('material')
+		return m()
 			->view( $this->row_tmpl )
 			->cmsfield( $input )
 			->fieldname( isset($db_field->Description{0}) ? $db_field->Description : $db_field->Name )
