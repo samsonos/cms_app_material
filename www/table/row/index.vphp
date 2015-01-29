@@ -19,19 +19,21 @@
 		<?php endforeach;?>
 	</td>
 	<td class="author">		
-		<?php v('user_SName');?><br><?php v('user_FName');?>		
+		<?php v('user_SName');?><br><?php v('user_FName');?>
 	</td>
-	<td class="modyfied">		
+	<td class="modyfied">
 		<?php v('cmsmaterial_Created'); ?><br>
-		<?php isval('cmsmaterial_Draft',0,'cmsmaterial_Modyfied')?>			
+		<?php isval('cmsmaterial_Draft',0,'cmsmaterial_Modyfied')?>
 	</td>
 	<td class="published" title="<?php t('Опубликовать/Скрыть материал')?>">
 		<a class="publish_href" href="<?php module_url( 'publish', 'cmsmaterial_id', 'table', 'nav_id', 'search', 'pager_current_page' ) ?>"></a>
 		<input type="checkbox" title="<?php t('Изменить статус публикации материала')?>" value="<?php v('cmsmaterial_id'); ?>" name="published" id="published" <?php isval('cmsmaterial_Published','1','checked')?>>
 	</td>
-	<td class="control">					
+	<td class="control">
 		<a class="icon2 icon_16x16 icon-edit" href="<?php module_url('form','cmsmaterial_id')?>" title="<?php t('Редактировать текущий материал')?>"></a>
 		<a class="icon2 icon_16x16 icon-copy-material copy" href="<?php module_url('copy','cmsmaterial_id', 'table', 'nav_id', 'search','pager_current_page')?>" title="<?php t('Создать копию материала')?>"></a>
-		<a class="icon2 icon_16x16 icon-delete delete" href="<?php module_url('remove', 'cmsmaterial_id', 'table', 'nav_id', 'search','pager_current_page')?>" title="<?php t('Удалить текущий материал')?>"></a>
-	</td>			
+        <?php if (isval('cmsmaterial_system', 0)) { ?>
+            <a class="icon2 icon_16x16 icon-delete delete" href="<?php module_url('remove', 'cmsmaterial_id', 'table', 'nav_id', 'search','pager_current_page')?>" title="<?php t('Удалить текущий материал')?>"></a>
+        <?php } ?>
+	</td>
 </tr>
