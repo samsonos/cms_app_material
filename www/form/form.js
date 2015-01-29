@@ -27,9 +27,15 @@ var formInit = function()
 	s('#btnSave').click(function(){saveMain( true );},true,true);
 	
 	// Apply button logic
-	s('#btnApply').click( saveMain,true,true);
-    s('.field_table').pageInit(function(asd){
-        asd.fixedHeader();
+	s('#btnApply').click(function(){saveMain( true );}, true, true);
+
+    // Make fixed header to additional fields
+    s('.field_table').pageInit(function(header){
+        var tab = $('.field_table').parents('.tab-content');
+        var shownBefore = tab.css('display');
+        tab.show();
+        header.fixedHeader();
+        tab.css('display', shownBefore);
     });
 };
 
@@ -48,7 +54,7 @@ var saveMain = function( redirect )
 	form.ajaxForm(function(response)
 	{	
 		// Redirect
-		if( redirect == true ) window.location.href = s('#appName').val();
+		if( redirect == true ) window.location.href = s('#appName').val() + '/form/' + s('#MaterialID').val();
 		// Rerender form
 		else
 		{			
