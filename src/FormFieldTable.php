@@ -160,6 +160,7 @@ class FormFieldTable extends \samson\cms\table\Table
 		return m()
 			->view( $this->row_tmpl )
 			->cmsfield( $input )
+			->matfield( $db_mf )
 			->fieldname( isset($db_field->Description{0}) ? $db_field->Description : $db_field->Name )
 			->field( $db_field )
 			->pager( $pager )
