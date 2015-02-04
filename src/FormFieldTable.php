@@ -118,7 +118,7 @@ class FormFieldTable extends \samson\cms\table\Table
 	}
 	
 	/** @see \samson\cms\site\Table::row() */
-	public function row( & $db_row, Pager & $pager = null )
+	public function row(&$db_row, Pager &$pager = null, $module = null)
 	{
 		// Get field metadata
 		$db_field = & $db_row->onetoone['_field'];
@@ -157,7 +157,7 @@ class FormFieldTable extends \samson\cms\table\Table
 		}	
 		
 		// Render field row
-		return m()
+		return m('material')
 			->view( $this->row_tmpl )
 			->cmsfield( $input )
 			->matfield( $db_mf )
@@ -191,18 +191,6 @@ class FormFieldTable extends \samson\cms\table\Table
                 if($this->debug ) elapsed('Rendering row '.$rn++.' of '.$rc.'(#'.$db_row->id.')');
                 $rows .= $this->row( $db_row, $this->pager );
                 //catch(\Exception $e){ return e('Error rendering row#'.$rn.' of '.$rc.'(#'.$db_row->id.')'); }
-            }
-
-            // If material is not related - render remains field
-            if ($this->db_material->type == 0) {
-                // Create input element for field
-                $input = Field::fromObject( $this->db_material, 'remains', 'Field' );
-
-                $rows .= m('material')
-                    ->view( $this->row_tmpl )
-                    ->cmsfield( $input )
-                    ->fieldname(t('Остаток', true))
-                    ->output();
             }
 
         }
