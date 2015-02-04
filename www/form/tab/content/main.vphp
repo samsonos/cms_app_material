@@ -25,9 +25,15 @@
 			<option value="0" <?php isval('material_Published',0,'selected')?>><?php t('Нет')?></option>
 			<option value="1" <?php isval('material_Published',1,'selected')?>><?php t('Да')?></option>
 		</select>
-	</li>	
+	</li>
+    <?php if (isval('material_system', 1)) { ?>
+        <li>
+            <b><?php t('*Системный материал') ?></b>
+        </li>
+    <?php } ?>
 	<li>
 		<label><?php t('Автор')?>:</label>
 		<div class="input-text disabled"><input id="user_name" name="user_name" value="<?php v('user_SName')?> <?php v('user_FName')?>" disabled></div></li>
 	<li>
+
 </ul>
