@@ -153,7 +153,7 @@ class MaterialApplication extends \samson\cms\App
         $form = new \samson\cms\web\material\Form( $material_id );
 
         // Success
-        return array( 'status' => TRUE, 'form' => $form->render(), 'url' => 'material/form/'.$material_id );
+        return array( 'status' => TRUE, 'form' => $form->render(), 'url' => $this->id.'/form/'.$material_id );
     }
 
     /** Async materials save */
