@@ -172,7 +172,7 @@ class Table extends \samson\cms\table\Table
     }
 
     /** @see \samson\cms\table\Table::row() */
-    public function row(& $material, Pager & $pager = null)
+    public function row(& $material, Pager & $pager = null, $module = NULL)
     {
         // Set table row view context
         $renderer = $this->renderer->view($this->row_tmpl);
