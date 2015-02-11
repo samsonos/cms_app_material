@@ -53,17 +53,16 @@ var saveMain = function( redirect )
 	// Async form send	
 	form.ajaxForm(function(response)
 	{	
+		// Parse JSON response
+        response = JSON.parse( response );
 		// Redirect
-		if( redirect == true ) window.location.href = s('#appName').val() + '/form/' + s('#MaterialID').val();
+		if( redirect == true ) window.location.href = (response.url !== undefined) ? response.url : s('#appName').val() + '/form/' + s('#MaterialID').val();
 		// Rerender form
 		else
 		{			
 			// If we have responce from server
 			if( response ) try
-			{
-				// Parse JSON responce
-				response = JSON.parse( response );
-						
+			{						
 				// If we have table html - update it
 				if( response.form ) 
 				{		
