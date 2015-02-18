@@ -116,6 +116,7 @@ class MaterialApplication extends \samson\cms\App
             // Create new material db record
             $material = new \samson\cms\CMSMaterial(false);
             $material->Active = 1;
+            $material->Created = date('Y-m-d H:m:s');
 
             $user = m('social')->user();
             $material->UserID = $user->UserID;
