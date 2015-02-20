@@ -116,6 +116,7 @@ class MaterialApplication extends \samson\cms\App
             // Create new material db record
             $material = new \samson\cms\CMSMaterial(false);
             $material->Active = 1;
+            $material->Created = date('Y-m-d H:m:s');
 
             $user = m('social')->user();
             $material->UserID = $user->UserID;
@@ -153,7 +154,7 @@ class MaterialApplication extends \samson\cms\App
         $form = new \samson\cms\web\material\Form( $material_id );
 
         // Success
-        return array( 'status' => TRUE, 'form' => $form->render(), 'url' => 'material/form/'.$material_id );
+        return array( 'status' => TRUE, 'form' => $form->render(), 'url' => $this->id.'/form/'.$material_id );
     }
 
     /** Async materials save */
