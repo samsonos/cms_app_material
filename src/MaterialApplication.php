@@ -120,19 +120,23 @@ class MaterialApplication extends \samson\cms\App
 
             $user = m('social')->user();
             $material->UserID = $user->UserID;
-
             $material->save();
-
-            // Create relation with structure
-            $structureMaterial = new \samson\activerecord\structurematerial(false);
-            $structureMaterial->MaterialID = $material->id;
-            $structureMaterial->StructureID = $cmsnav;
-            $structureMaterial->Active = 1;
-            $structureMaterial->save();
-            //trace ($structureMaterial, true);
-
+            
             // Set new material as current
             $material_id = $material->id;
+
+            // Convert parent CMSNavigation to an array
+            $cmsnavs = !is_array($cmsnav) ? array($cmsnav) : $cmsnav;
+
+            // Fill parent CMSNavigation relations for material
+            foreach ($cmsnavs as $cmsnav) {
+                // Create relation with structure
+                $structureMaterial = new \samson\activerecord\structurematerial(false);
+                $structureMaterial->MaterialID = $material->id;
+                $structureMaterial->StructureID = $cmsnav;
+                $structureMaterial->Active = 1;
+                $structureMaterial->save();
+            }
         }
 
         // Create form object
