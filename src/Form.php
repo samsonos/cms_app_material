@@ -104,6 +104,7 @@ class Form
 				}		
 			}
 		}
+		// TODO: This else block below does not work at all because its condition is checked in controller
 		// Material does not found
 		else
 		{
