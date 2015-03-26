@@ -6,6 +6,7 @@
         "samsonos/cms_app": "*",
         "samsonos/cms_table": "*",
         "samsonos/cms_input": "*",
+        "samsonos/cms_input_text": "*",
         "samsonos/cms_input_date": "*",
         "samsonos/cms_input_material": "*",
         "samsonos/cms_input_select": "*",
