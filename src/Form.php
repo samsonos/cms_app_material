@@ -84,7 +84,11 @@ class Form
 					->Active(1);
 				
 				// If material has related cmsnavs - gather material related cmsnavs info
-				foreach ( $cmsnavs as $structure ) $this->navs[ $structure->id ] = $structure;
+				foreach ( $cmsnavs as $structure ) {
+                    if ($structure->type != 2) {
+                        $this->navs[$structure->id] = $structure;
+                    }
+                }
 	
 				// Add cmsnavs ids to query
 				$fields_query->StructureID( array_keys( $this->navs ) );			
