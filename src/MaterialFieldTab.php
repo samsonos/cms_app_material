@@ -4,8 +4,6 @@ namespace samson\cms\web\material;
 
 use samson\activerecord\dbQuery;
 use samson\cms\CMSMaterialField;
-use samson\cms\input\Field;
-use samson\core\SamsonLocale;
 
 /** 
  * @author Egorov Vitaly <egorov@samsonos.com>
