@@ -2,6 +2,7 @@
 
 namespace samson\cms\web\material;
 
+use samson\activerecord\dbQuery;
 use samson\cms\CMSMaterialField;
 use samson\cms\input\Field;
 use samson\core\SamsonLocale;
@@ -11,28 +12,27 @@ use samson\core\SamsonLocale;
  */
 class MaterialFieldTab extends FormTab
 {
-	/** Meta static variable to disable default form rendering */
-	public static $AUTO_RENDER = false;
-	
-	/** Tab sorting index for header sorting */
-	public $index = 1;
-	
-	/** Tab content view path */
-	private $content_view = 'form/tab/content/materialfield';
-	
-	/**
-	 * CMS Field object
-	 * @var \samson\cms\input\Wysiwyg
-	 * @see \samson\cms\input\Wysiwyg
-	 */
-	protected $cmsfield;
-	
-	/**
-	 * CMSMaterialField DB object pointer
-	 * @var CMSMaterialField
-	 * @see \samson\cms\CMSMaterialField
-	 */
-	protected $db_mf;
+    /** Meta static variable to disable default form rendering */
+    public static $AUTO_RENDER = false;
+
+    /** Tab sorting index for header sorting */
+    public $index = 1;
+
+    /** Tab content view path */
+    private $content_view = 'form/tab/content/materialfield';
+
+    /**
+     * CMS Field object
+     * @var \samsoncms\input\wysiwyg\Application
+     */
+    protected $cmsfield;
+
+    /**
+     * CMSMaterialField DB object pointer
+     * @var CMSMaterialField
+     * @see \samson\cms\CMSMaterialField
+     */
+    protected $db_mf;
 
     /**
      * Constructor
@@ -42,28 +42,28 @@ class MaterialFieldTab extends FormTab
      * @param string $locale
      * @param string $field_type
      */
-	public function __construct( Form & $form, FormTab & $parent, CMSMaterialField & $db_mf, $locale = null, $field_type = 'WYSIWYG' )
-	{	
-		// Create CMS Field object from CMSMaterialField object
-		$this->cmsfield = Field::fromObject( $db_mf, 'Value', $field_type );
-		
-		// Save tab header name as locale name
-		$this->name = $locale;
+    public function __construct(Form & $form, FormTab & $parent, CMSMaterialField & $db_mf, $locale = null, $field_type = 'WYSIWYG')
+    {
+        // Create CMS Field object from CMSMaterialField object
+        $this->cmsfield = m('samsoncms_input_wysiwyg_application')->createField(new dbQuery(), $db_mf);
+
+        // Save tab header name as locale name
+        $this->name = $locale;
 
         // Generate unique html identifier
-        $this->id = utf8_translit( $parent->name ).'_'.$this->name.'_tab';
+        $this->id = utf8_translit($parent->name) . '_' . $this->name . '_tab';
 
-		// Save pointers to database CMSMaterialField object 
-		$this->db_mf = & $db_mf;
-		
-		// Call parent
-		parent::__construct( $form, $parent );
+        // Save pointers to database CMSMaterialField object
+        $this->db_mf = &$db_mf;
 
-		//elapsed($this->content_view.'!!!!!!!!!!!!!!');
+        // Call parent
+        parent::__construct($form, $parent);
 
-		// Render CMS Field
-		$this->content_html = m('material')->view( $this->content_view )
-			->cmsfield( $this->cmsfield )
-		->output();		
-	}	
+        //elapsed($this->content_view.'!!!!!!!!!!!!!!');
+
+        // Render CMS Field
+        $this->content_html = m('material')->view($this->content_view)
+            ->cmsfield($this->cmsfield)
+            ->output();
+    }
 }
