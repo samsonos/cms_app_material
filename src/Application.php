@@ -58,7 +58,7 @@ class Application extends App
         }
 
         // Old-fashioned direct search input form POST if not passed
-        $search = !isset($search) ? (isset($_POST['search']) ? $_POST['search'] : '') : $search;
+        $search = !isset($search) ? (isset($_POST['search']) ? $_POST['search'] : '0') : $search;
 
         if (!isset($navigationId)) {
             $this->set('all_materials', true);
@@ -206,6 +206,10 @@ class Application extends App
      */
     public function __async_table($navigationId = '0', $search = '0', $page = 1)
     {
+        $navigationId = isset($navigationId ) ? $navigationId : '0';
+        $search = !empty($search) ? $search  : '0';
+        $page = isset($page ) ? $page : 1;
+
         // We must always receive at least one navigataion id to filter materials
         $navigationIds = isset($navigationId) && !empty($navigationId)
             ? array($navigationId)
@@ -225,7 +229,7 @@ class Application extends App
                 ->navigation($navigationIds)
                 ->search($search)
                 ->fill()
-                ->toView(self::VIEW_TABLE_NAME.'_')
+                ->toView(self::VIEW_TABLE_NAME . '_')
         );
     }
 

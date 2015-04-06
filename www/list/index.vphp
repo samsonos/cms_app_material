@@ -1,7 +1,3 @@
-<div class="table-switcher">
-    <a class="js-table">Table</a>
-    <a class="js-tiles">Tiles</a>
-</div>
 <div id="list" class="table2 material-list">
     <div class="table2-header-row table2-row">
         <div class="table2-col table2-header-col id">#</div>
