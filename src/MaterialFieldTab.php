@@ -1,6 +1,6 @@
 <?php
 
-namespace samson\cms\web\material;
+namespace samsoncms\app\material;
 
 use samson\activerecord\dbQuery;
 use samson\cms\CMSMaterialField;

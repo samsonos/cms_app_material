@@ -1,5 +1,5 @@
 <?php
-namespace samson\cms\web\material;
+namespace samsoncms\app\material;
 
 use samson\activerecord\dbRelation;
 use samson\activerecord\dbConditionGroup;

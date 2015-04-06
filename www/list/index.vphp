@@ -1,0 +1,17 @@
+<div class="table-switcher">
+    <a class="js-table">Table</a>
+    <a class="js-tiles">Tiles</a>
+</div>
+<div id="list" class="table2 material-list">
+    <div class="table2-header-row table2-row">
+        <div class="table2-col table2-header-col id">#</div>
+        <div class="table2-col table2-header-col name"><?php t('Название')?> / <?php t('Черновик')?></div>
+        <div class="table2-col table2-header-col url" title="<?php t('Идентификатор материала')?>">URL</div>
+        <div class="table2-col table2-header-col structure"><?php t('Раздел')?></div>
+        <div class="table2-col table2-header-col author" title="<?php t('Последний пользователь вносивший изменения в материал')?>"><?php t('Автор')?></div>
+        <div class="table2-col table2-header-col modified"><?php t('Создан')?> / <?php t('Изменен')?></div>
+        <div class="table2-col table2-header-col published" title="<?php t('Опубликован ли материал')?>"><?php t('Опб')?></div>
+        <div class="table2-col table2-header-col control" title="<?php t('Упраление материалом')?>"></div>
+    </div>
+    <div class="table2-body"><?php v('items'); ?></div>
+</div>
