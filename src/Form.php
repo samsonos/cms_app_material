@@ -59,6 +59,8 @@ class Form
      */
     public function __construct($material_id = null, $parentStructure = null)
     {
+        // Variable to store navigation ids to get fields by them from structurefields
+        $navigationForFields = array();
         // Add structure material condition
         $scg = new dbConditionGroup('or');
         $scg->arguments[] = new dbConditionArgument(dbMySQLConnector::$prefix . 'structurematerial_Active', 1);
@@ -85,15 +87,19 @@ class Form
                     ->order_by('FieldID', 'ASC')
                     ->Active(1);
 
+
                 // If material has related cmsnavs - gather material related cmsnavs info
                 foreach ($cmsnavs as $structure) {
+                    $this->navs[$structure->id] = $structure;
                     if ($structure->type != 2) {
-                        $this->navs[$structure->id] = $structure;
+                        $navigationForFields[] = $structure->id;
                     }
                 }
 
+
+
                 // Add cmsnavs ids to query
-                $fields_query->StructureID(array_keys($this->navs));
+                $fields_query->StructureID($navigationForFields);
 
                 // Perform DB request
                 if ($fields_query->exec($fields)) foreach ($fields as $data) {
