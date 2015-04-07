@@ -3,29 +3,29 @@
 <section class="top clearfix">
 
     <!-- Header block -->
-    <?php if(isv('cmsnav')):?>
+    <?php if(isv('navigation')):?>
         <h1 class="icon2 icon_16x16 left icon-structure">
-            <!--  <a href="<?php url_base('structure', 'cmsnav_id')?>" title="Перейти к редактированию ЭСС"></a>-->
-            <?php v('cmsnav_Name'); ?>
+            <!--  <a href="<?php url_base('structure', 'navigation_id')?>" title="Перейти к редактированию ЭСС"></a>-->
+            <?php v('navigation_Name'); ?>
             &rArr;
         </h1>
     <?php endif?>
-    <input id="cmsnav_id" type="hidden" value="<?php iv('cmsnav_id'); ?>">
+    <input id="cmsnav_id" type="hidden" value="<?php iv('navigation_id'); ?>">
     <h1 class="icon2 icon_16x16 left icon-material" title="<?php t('Таблица материалов')?>"><?php t('Материалы')?>:</h1>
     <!-- End of Header block -->
 
     <!-- Table search block -->
     <form class="search" method="POST">
-        <input name="search" id="search" controller="material/table/" placeholder="<?php t('Укажите поисковый запрос')?>..." value="<?php iv('search')?>">
+        <input name="search" id="search" controller="<?php url_base('', 'id', 'table') ?>" placeholder="<?php t('Укажите поисковый запрос')?>..." value="<?php iv('search')?>">
         <input type="hidden" class="loader-text" value="<?php t('Выполняется поиск...')?>">
     </form>
     <!-- End of Table search block -->
 
     <!-- Pager block -->
-    <?php if(isv('pager_html')):?>
+    <?php if(isv('table_pager')):?>
         <ul class="table-pager">
             <li><?php t('Отображать')?>:</li>
-            <?php v('pager_html')?>
+            <?php v('table_pager')?>
         </ul>
     <?php endif?>
     <!-- End of Pager block -->
