@@ -21,6 +21,7 @@ class Collection extends Paged
     public $indexView = 'www/list/index';
     public $itemView = 'www/list/item/index';
     public $emptyView = 'www/list/item/empty';
+    public $entityName = 'samson\activerecord\material';
 
     /**
      * @param dbQuery $query

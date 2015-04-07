@@ -58,7 +58,7 @@ class Application extends App
         }
 
         // Old-fashioned direct search input form POST if not passed
-        $search = !isset($search) ? (isset($_POST['search']) ? $_POST['search'] : '0') : $search;
+        $search = !isset($search) ? (isset($_POST['search']) ? $_POST['search'] : '') : $search;
 
         if (!isset($navigationId)) {
             $this->set('all_materials', true);
@@ -204,10 +204,10 @@ class Application extends App
      * @return array Asynchronous response containing status and materials list with pager on success
      * or just status on asynchronous controller failure
      */
-    public function __async_table($navigationId = '0', $search = '0', $page = 1)
+    public function __async_table($navigationId = '0', $search = '', $page = 1)
     {
         $navigationId = isset($navigationId ) ? $navigationId : '0';
-        $search = !empty($search) ? $search  : '0';
+        $search = !empty($search) ? $search  : 0;
         $page = isset($page ) ? $page : 1;
 
         // We must always receive at least one navigataion id to filter materials
