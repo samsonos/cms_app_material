@@ -16,7 +16,7 @@
     </div>
     <div class="table2-col modyfied">
         <?php v('item_Created'); ?><br>
-        <?php isval('item_Draft', 0, 'item_Modyfied')?>
+        <?php v('item_Modyfied')?>
     </div>
     <div class="table2-col published">
         <a class="publish_href" href="<?php module_url('publish', 'item_id') ?>"></a>

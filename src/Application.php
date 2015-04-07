@@ -144,10 +144,11 @@ class Application extends App
                 $material = dbQuery('samson\cms\Material')->id($_POST['MaterialID'])->first();
             } else { // New material creation
                 // Fill creation ts
-                $material->Created = date('h:m:i d.m.y');
+                $material->Created = date('Y-m-d H:m:s');
                 $material->Active = 1;
             }
 
+            $material->Modyfied = date('Y-m-d H:m:s');
             // Make it not draft
             $material->Draft = 0;
 

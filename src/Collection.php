@@ -24,11 +24,34 @@ class Collection extends Paged
     public $entityName = 'samson\activerecord\material';
 
     /**
-     * @param dbQuery $query
+     * Function for joining tables to get some extra data in result set
+     *
+     * @param dbQuery $query Collection query
      */
     public function joinTables(dbQuery $query)
     {
-        $query->join('user')->join('structurematerial')->join('structure')->order_by('material.Modyfied', 'DESC');
+        $query->join('user')
+            ->order_by('Modyfied', 'DESC')
+            ->join('structurematerial')
+            ->cond('structurematerial.Active', 1)
+            ->join('structure')
+            ->cond('structure.Active', 1)
+            ->cond('structure.system', 0);
+    }
+
+    /**
+     * Function to cut off related materials
+     *
+     * @param array $materialIds Array of material identifiers
+     */
+    public function parentIdInjection(array & $materialIds)
+    {
+        $this->query
+            ->className('material')
+            ->cond('MaterialID', $materialIds)
+            ->cond('parent_id', 0)
+            ->order_by('Modyfied', 'DESC')
+            ->fieldsNew('MaterialID', $materialIds);
     }
 
     /** {@inheritdoc} */
@@ -36,10 +59,8 @@ class Collection extends Paged
     {
         $structureHTML = '';
         foreach ($item->onetomany['_structure'] as $structure) {
-            if ($structure->system != 1) {
-                $structureHTML .= '<a class="inner" title="' . t('Перейти к материалам ЭСС', true) .
-                    '" href="' . url_build($this->renderer->id(), $structure->id) . '">' . $structure->Name . '</a>, ';
-            }
+            $structureHTML .= '<a class="inner" title="' . t('Перейти к материалам ЭСС', true) .
+                '" href="' . url_build($this->renderer->id(), $structure->id) . '">' . $structure->Name . '</a>, ';
         }
         $structureHTML = substr($structureHTML, 0, strlen($structureHTML) - 2);
         return $this->renderer
@@ -57,6 +78,7 @@ class Collection extends Paged
         $pager = isset($pager) ? $pager : new Pager();
 
         $this->entityHandler(array($this, 'joinTables'));
+        $this->handler(array($this, 'parentIdInjection'));
 
         // Call parents
         parent::__construct($renderer, $query, $pager);
