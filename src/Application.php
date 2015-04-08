@@ -292,30 +292,32 @@ class Application extends App
         return $result;
     }
 
-// 	/**
-// 	 * Copy material
-// 	 * @param mixed $_cmsmat Pointer to material object or material identifier
-// 	 * @return array Operation result data
-// 	 */
-// 	function __async_copy( $_cmsmat )
-// 	{
-// 		return array( 'status' => FALSE, 'message' => 'Material "'.$_cmsmat.'" not found');
+    /**
+     * Copy material
+     *
+     * @param mixed $materialId Pointer to material object or material identifier
+     * @return array Operation result data
+     */
+    function __async_copy($materialId)
+    {
+        /** @var array $result Asynchronous controller result */
+        $result = array('status' => false);
+        /** @var \samson\cms\Material $material Material object to copy */
+        $material = null;
 
-// 		// Get material safely 
-// 		if( cmsquery()->id($_cmsmat)->first( $cmsmat ) )
-// 		{
-// 			// Toggle material published status
-// 			$cmsmat->Published = $cmsmat->Published ? 0 : 1;
+        // Get material safely
+        if (dbQuery('\samson\cms\Material')->id($materialId)->first($material)) {
+            // Copy found material
+            $material->copy();
+            // Set success status
+            $result['status'] = true;
+        } else {  // Set error message
+            $result['message'] = 'Material "' . $materialId . '" not found';
+        }
 
-// 			// Save changes to DB
-// 			$cmsmat->save();
-
-// 			// Действие не выполнено
-// 			return array( 'status' => TRUE );
-// 		}		
-// 		// Return error array
-// 		else return array( 'status' => FALSE, 'message' => 'Material "'.$_cmsmat.'" not found');
-// 	}
+        // Return asynchronous result
+        return $result;
+    }
 
     /** Output for main page */
     public function main()

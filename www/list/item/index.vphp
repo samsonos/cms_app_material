@@ -28,11 +28,11 @@
         <a class="icon2 icon_16x16 icon-edit"
            href="<?php module_url('form', 'item_id')?>" title="<?php t('Редактировать текущий материал')?>"></a>
         <a class="icon2 icon_16x16 icon-copy-material copy"
-           href="<?php module_url('copy', 'item_id', 'table', 'nav_id', 'search', 'pager_current_page')?>"
+           href="<?php module_url('copy', 'item_id', 'table', 'navigation', 'search', 'currentPage')?>"
            title="<?php t('Создать копию материала')?>"></a>
 <?php if (isval('item_system', 0)) : ?>
             <a class="icon2 icon_16x16 icon-delete delete"
-               href="<?php module_url('remove', 'item_id')?>"
+               href="<?php module_url('remove', 'item_id', 'table', 'navigation', 'search', 'currentPage')?>"
                title="<?php t('Удалить текущий материал')?>"></a>
 <?php endif; ?>
     </div>

@@ -33,23 +33,24 @@ class Collection extends Paged
         $query->join('user')
             ->order_by('Modyfied', 'DESC')
             ->join('structurematerial')
-            ->cond('structurematerial.Active', 1)
             ->join('structure')
-            ->cond('structure.Active', 1)
-            ->cond('structure.system', 0);
+            ->cond('structure.system', 0)
+        ;
     }
 
     /**
-     * Function to cut off related materials
+     * Function to cut off related and table materials
      *
      * @param array $materialIds Array of material identifiers
      */
     public function parentIdInjection(array & $materialIds)
     {
+        // Cut off related and table materials
         $this->query
             ->className('material')
             ->cond('MaterialID', $materialIds)
             ->cond('parent_id', 0)
+            ->cond('Active', 1)
             ->order_by('Modyfied', 'DESC')
             ->fieldsNew('MaterialID', $materialIds);
     }
@@ -58,6 +59,10 @@ class Collection extends Paged
     public function renderItem($item)
     {
         $structureHTML = '';
+        $search = empty($this->search) ? '0' : $this->search[0];
+        $navigation = (count($this->navigation) == 1 && count($this->navigation[0]) == 1)
+            ? $this->navigation[0][0] : '0';
+
         foreach ($item->onetomany['_structure'] as $structure) {
             $structureHTML .= '<a class="inner" title="' . t('Перейти к материалам ЭСС', true) .
                 '" href="' . url_build($this->renderer->id(), $structure->id) . '">' . $structure->Name . '</a>, ';
@@ -68,6 +73,9 @@ class Collection extends Paged
             ->set($item, 'item')
             ->set($item->onetoone['_user'], 'user')
             ->set('structures', $structureHTML)
+            ->set('currentPage', $this->pager->current_page)
+            ->set('search', $search)
+            ->set('navigation', $navigation)
             ->output();
     }
 
