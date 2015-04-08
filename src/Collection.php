@@ -58,16 +58,23 @@ class Collection extends Paged
     /** {@inheritdoc} */
     public function renderItem($item)
     {
+        /** @var string $structureHTML HTML representation of material structures */
         $structureHTML = '';
+        /** @var string $search Search string */
         $search = empty($this->search) ? '0' : $this->search[0];
+        /** @var int|string $navigation Filter navigation identifier */
         $navigation = (count($this->navigation) == 1 && count($this->navigation[0]) == 1)
             ? $this->navigation[0][0] : '0';
 
+        /** @var \samson\activerecord\structure $structure Material structures list */
         foreach ($item->onetomany['_structure'] as $structure) {
             $structureHTML .= '<a class="inner" title="' . t('Перейти к материалам ЭСС', true) .
                 '" href="' . url_build($this->renderer->id(), $structure->id) . '">' . $structure->Name . '</a>, ';
         }
+        // Cut last comma
         $structureHTML = substr($structureHTML, 0, strlen($structureHTML) - 2);
+
+        // Return item HTML
         return $this->renderer
             ->view($this->itemView)
             ->set($item, 'item')
@@ -82,9 +89,11 @@ class Collection extends Paged
     /** {@inheritdoc} */
     public function __construct($renderer, $query = null, $pager = null)
     {
+        // Create query and pager instances by default
         $query = isset($query) ? $query : new dbQuery();
         $pager = isset($pager) ? $pager : new Pager();
 
+        // Call external handlers
         $this->entityHandler(array($this, 'joinTables'));
         $this->handler(array($this, 'parentIdInjection'));
 
