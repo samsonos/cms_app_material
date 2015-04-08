@@ -33,23 +33,24 @@ class Collection extends Paged
         $query->join('user')
             ->order_by('Modyfied', 'DESC')
             ->join('structurematerial')
-            ->cond('structurematerial.Active', 1)
             ->join('structure')
-            ->cond('structure.Active', 1)
-            ->cond('structure.system', 0);
+            ->cond('structure.system', 0)
+        ;
     }
 
     /**
-     * Function to cut off related materials
+     * Function to cut off related and table materials
      *
      * @param array $materialIds Array of material identifiers
      */
     public function parentIdInjection(array & $materialIds)
     {
+        // Cut off related and table materials
         $this->query
             ->className('material')
             ->cond('MaterialID', $materialIds)
             ->cond('parent_id', 0)
+            ->cond('Active', 1)
             ->order_by('Modyfied', 'DESC')
             ->fieldsNew('MaterialID', $materialIds);
     }
@@ -57,26 +58,42 @@ class Collection extends Paged
     /** {@inheritdoc} */
     public function renderItem($item)
     {
+        /** @var string $structureHTML HTML representation of material structures */
         $structureHTML = '';
+        /** @var string $search Search string */
+        $search = empty($this->search) ? '0' : $this->search[0];
+        /** @var int|string $navigation Filter navigation identifier */
+        $navigation = (count($this->navigation) == 1 && count($this->navigation[0]) == 1)
+            ? $this->navigation[0][0] : '0';
+
+        /** @var \samson\activerecord\structure $structure Material structures list */
         foreach ($item->onetomany['_structure'] as $structure) {
             $structureHTML .= '<a class="inner" title="' . t('Перейти к материалам ЭСС', true) .
                 '" href="' . url_build($this->renderer->id(), $structure->id) . '">' . $structure->Name . '</a>, ';
         }
+        // Cut last comma
         $structureHTML = substr($structureHTML, 0, strlen($structureHTML) - 2);
+
+        // Return item HTML
         return $this->renderer
             ->view($this->itemView)
             ->set($item, 'item')
             ->set($item->onetoone['_user'], 'user')
             ->set('structures', $structureHTML)
+            ->set('currentPage', $this->pager->current_page)
+            ->set('search', $search)
+            ->set('navigation', $navigation)
             ->output();
     }
 
     /** {@inheritdoc} */
     public function __construct($renderer, $query = null, $pager = null)
     {
+        // Create query and pager instances by default
         $query = isset($query) ? $query : new dbQuery();
         $pager = isset($pager) ? $pager : new Pager();
 
+        // Call external handlers
         $this->entityHandler(array($this, 'joinTables'));
         $this->handler(array($this, 'parentIdInjection'));
 

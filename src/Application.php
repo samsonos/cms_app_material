@@ -36,9 +36,9 @@ class Application extends App
     /**
      * Generic controller
      *
-     * @param null $navigationId
-     * @param null $search
-     * @param null $page
+     * @param int|null $navigationId Navigation identifier to get it's materials
+     * @param string|null $search Search string to find it's value in material fields
+     * @param int|null $page Page number
      */
     public function __handler($navigationId = null, $search = null, $page = null)
     {
@@ -74,7 +74,13 @@ class Application extends App
             ->set($this->__async_table($navigationId, $search, $page));
     }
 
-    /** Generic material form controller */
+    /**
+     * Generic material form controller
+     *
+     * @param int|null $materialId Editing material identifier if not null.
+     * If null is passed material creation form will be displayed
+     * @param int|null $navigation Structure material belongs to.
+     */
     public function __form($materialId = null, $navigation = null)
     {
         // If this is form for a new material with structure relation
@@ -117,7 +123,13 @@ class Application extends App
 
     /** Main logic */
 
-    /** Async form */
+    /**
+     * Asynchronous controller for form rendering
+     *
+     * @param int|null $materialId Material identifier to build form.
+     * @param int|null $navigation WHY???
+     * @return array Asynchronous controller result
+     */
     function __async_form($materialId = null, $navigation = null)
     {
         // Create form object
@@ -127,7 +139,7 @@ class Application extends App
         return array('status' => true, 'form' => $form->render(), 'url' => $this->id . '/form/' . $materialId);
     }
 
-    /** Async materials save */
+    /** Asynchronous controller for material save */
     function __async_save()
     {
         /** @var array $result Asynchronous controller result */
@@ -148,10 +160,12 @@ class Application extends App
                 $material->Active = 1;
             }
 
+            // Set material modification date
             $material->Modyfied = date('Y-m-d H:m:s');
             // Make it not draft
             $material->Draft = 0;
 
+            // Try to find changed information
             if (isset($_POST['Name'])) {
                 $material->Name = $_POST['Name'];
             }
@@ -189,7 +203,6 @@ class Application extends App
             // Success
             $result['status'] = true;
             $result[] = $this->__async_form($material->id);
-//            array_merge(array('status' => true), );
         }
 
         // Fail
@@ -207,6 +220,7 @@ class Application extends App
      */
     public function __async_table($navigationId = '0', $search = '', $page = 1)
     {
+        // Set filtration info
         $navigationId = isset($navigationId ) ? $navigationId : '0';
         $search = !empty($search) ? $search  : 0;
         $page = isset($page ) ? $page : 1;
@@ -216,12 +230,14 @@ class Application extends App
             ? array($navigationId)
             : dbQuery('structure')->fieldsNew('StructureID'); // Use all navigation entities as filter
 
+        // Create pager for material collection
         $pager = new Pager(
             $page,
             $this->materialCount,
             $this->id . '/'.self::VIEW_TABLE_NAME.'/' . $navigationId . '/' . $search
         );
 
+        // Create material collection
         $collection = new Collection($this, new dbQuery(), $pager);
 
         return array_merge(
@@ -236,6 +252,7 @@ class Application extends App
 
     /**
      * Publish/Unpublish material
+     *
      * @param mixed $materialId Pointer to material object or material identifier
      * @return array Operation result data
      */
@@ -265,6 +282,7 @@ class Application extends App
 
     /**
      * Delete material
+     * 
      * @param mixed $materialId Pointer to material object or material identifier
      * @return array Operation result data
      */
@@ -283,6 +301,7 @@ class Application extends App
             // Save changes to DB
             $material->save();
 
+            // Set success event status
             $result['status'] = true;
         } else {
             // Return error array
@@ -292,30 +311,32 @@ class Application extends App
         return $result;
     }
 
-// 	/**
-// 	 * Copy material
-// 	 * @param mixed $_cmsmat Pointer to material object or material identifier
-// 	 * @return array Operation result data
-// 	 */
-// 	function __async_copy( $_cmsmat )
-// 	{
-// 		return array( 'status' => FALSE, 'message' => 'Material "'.$_cmsmat.'" not found');
+    /**
+     * Copy material
+     *
+     * @param mixed $materialId Pointer to material object or material identifier
+     * @return array Operation result data
+     */
+    function __async_copy($materialId)
+    {
+        /** @var array $result Asynchronous controller result */
+        $result = array('status' => false);
+        /** @var \samson\cms\Material $material Material object to copy */
+        $material = null;
 
-// 		// Get material safely 
-// 		if( cmsquery()->id($_cmsmat)->first( $cmsmat ) )
-// 		{
-// 			// Toggle material published status
-// 			$cmsmat->Published = $cmsmat->Published ? 0 : 1;
+        // Get material safely
+        if (dbQuery('\samson\cms\Material')->id($materialId)->first($material)) {
+            // Copy found material
+            $material->copy();
+            // Set success status
+            $result['status'] = true;
+        } else {  // Set error message
+            $result['message'] = 'Material "' . $materialId . '" not found';
+        }
 
-// 			// Save changes to DB
-// 			$cmsmat->save();
-
-// 			// Действие не выполнено
-// 			return array( 'status' => TRUE );
-// 		}		
-// 		// Return error array
-// 		else return array( 'status' => FALSE, 'message' => 'Material "'.$_cmsmat.'" not found');
-// 	}
+        // Return asynchronous result
+        return $result;
+    }
 
     /** Output for main page */
     public function main()
