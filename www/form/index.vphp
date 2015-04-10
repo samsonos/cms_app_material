@@ -1,5 +1,5 @@
 <!-- Шаблон формы редактирования материала -->
-<section class="material-create">
+<section class="material-create template-form">
 	<h1 class="section_t">
 		<?php t('Редактирование материала')?>#<?php v('cmsmaterial_id')?> -
 		<span class="parent-name"><?php v('cmsmaterial_Name'); ?></span>
