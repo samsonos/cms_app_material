@@ -3,48 +3,6 @@
 
   table-layout: fixed;
 
-  /* Generic classes for columns both TD and TH */
-  /* Identifier column */
-  .id {
-    width: 55px;
-  }
-  /* Name column */
-  .name {
-    width: 30%;
-    position: relative;
-    text-align: left;
-  }
-  /* Url column */
-  .url {
-    text-align: left;
-  }
-  /* Parent structure column */
-  .structure {
-    width: 25%;
-    text-align: left;
-  }
-  /* Author column */
-  .author {
-    width: 75px;
-    min-width: 75px;
-    text-align: left;
-  }
-  /* Modification column */
-  .modyfied {
-    width: 115px;
-    max-width: 115px;
-  }
-  /* Is published column */
-  .published {
-    width: 45px;
-  }
-  /* Controls column */
-  .control {
-    width: 120px;
-    min-width: 120px;
-    text-align: center;
-  }
-
   /* Table rows */
   .table2-row {
 
@@ -66,6 +24,50 @@
 
     /* Row cell */
     .table2-col {
+
+      &.table2-header-col {
+        /* Generic classes for columns both TD and TH */
+        /* Identifier column */
+        &.id {
+          width: 55px;
+        }
+        /* Name column */
+        &.name {
+          width: 30%;
+          position: relative;
+          text-align: left;
+        }
+        /* Url column */
+        &.url {
+          text-align: left;
+        }
+        /* Parent structure column */
+        &.structure {
+          width: 25%;
+          text-align: left;
+        }
+        /* Author column */
+        &.author {
+          width: 75px;
+          min-width: 75px;
+          text-align: left;
+        }
+        /* Modification column */
+        &.modyfied {
+          width: 115px;
+          max-width: 115px;
+        }
+        /* Is published column */
+        &.published {
+          width: 45px;
+        }
+        /* Controls column */
+        &.control {
+          width: 120px;
+          min-width: 120px;
+          text-align: center;
+        }
+      }
 
       &.name {
         padding-right: 25px;
@@ -91,18 +93,6 @@
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-      }
-
-      /* Draft link icon */
-      .draft-link {
-        position: absolute;
-        top: 26px;
-        right: 10px;
-        display: block;
-        width: 18px;
-        height: 18px;
-        background: url(../img/draft.png) no-repeat;
-        margin-top: -16px;
       }
 
       /* Cell link */
