@@ -69,10 +69,8 @@ class Collection extends Paged
         /** @var \samson\activerecord\structure $structure Material structures list */
         foreach ($item->onetomany['_structure'] as $structure) {
             $structureHTML .= '<a class="inner" title="' . t('Перейти к материалам ЭСС', true) .
-                '" href="' . url_build($this->renderer->id(), $structure->id) . '">' . $structure->Name . '</a>, ';
+                '" href="' . url_build($this->renderer->id(), $structure->id) . '">' . $structure->Name . '</a> ';
         }
-        // Cut last comma
-        $structureHTML = substr($structureHTML, 0, strlen($structureHTML) - 2);
 
         // Return item HTML
         return $this->renderer
