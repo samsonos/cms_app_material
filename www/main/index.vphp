@@ -1,5 +1,5 @@
 <div class="bars_on_m material">
-	<div class="t t_with_i i_materils">
+	<div class="t t_with_i icon2 icon-material icon-left">
         <?php t('Последние добавленные материалы')?>:
 		<a class="on_b_page" href="material" title="<?php t('Перейти к материалам cайта')?>"><?php t('Перейти к материалам')?></a>
 	</div>	
