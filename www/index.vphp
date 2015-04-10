@@ -1,6 +1,6 @@
 <!-- Created by Vitaly Iegorov <egorov@samsonos.com> on 22.08.14 at 10:10 -->
 <!-- Top section -->
-<section class="top clearfix">
+<section class="template-container-header top clearfix">
 
     <!-- Header block -->
     <?php if(isv('navigation')):?>
@@ -34,7 +34,7 @@
 <!-- End of Top section -->
 
 <!-- Content section -->
-<section id="content">
+<section id="content" class="template-container-content clearfix">
     <?php v('table_html'); ?>
 </section>
 <!-- End of Content section -->
