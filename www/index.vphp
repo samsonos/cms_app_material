@@ -14,7 +14,7 @@
     <input id="cmsnav_id" type="hidden" value="<?php iv('navigation_id'); ?>">
     <h1 title="<?php t('Таблица материалов')?>">
         <i class="icon2 icon_16x16 left icon-material"></i>
-        <?php t('Материалы')?>:
+        <?php t('Материалы')?>
     </h1>
     <!-- End of Header block -->
 
