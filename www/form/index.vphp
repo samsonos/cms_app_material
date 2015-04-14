@@ -22,9 +22,9 @@
 		
 		<!-- Controls -->
 		<div class="btn-panel">
-			<input class="template-form-btn" type="button" id="btnApply" value="<?php t('Применить')?>" title="<?php t('Сохранить материал в базе данных')?>">
+			<input class="template-form-btn" type="button" id="btnApply" value="<?php t('Записать')?>" title="<?php t('Сохранить материал в базе данных')?>">
 			<a class="template-form-btn" id="btnExit" href="<?php module_url()?>" title="<?php t('Закрыть форму не сохраняя материал и вернуться к списку материалов')?>">
-                <?php t('Закрыть')?>
+                <?php t('К списку')?>
             </a>
 		</div>	
 		<!-- End Controls -->

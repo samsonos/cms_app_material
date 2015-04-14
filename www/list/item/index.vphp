@@ -27,7 +27,7 @@
     <div class="table2-col control">
         <a class="icon2 icon_16x16 icon-edit"
            href="<?php module_url('form', 'item_id')?>" title="<?php t('Редактировать текущий материал')?>"></a>
-        <a class="icon2 icon_16x16 icon-copy-material copy"
+        <a class="icon2 icon_16x16 icon2-files-o copy"
            href="<?php module_url('copy', 'item_id', 'table', 'navigation', 'search', 'currentPage')?>"
            title="<?php t('Создать копию материала')?>"></a>
 <?php if (isval('item_system', 0)) : ?>
