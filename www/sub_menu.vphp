@@ -2,7 +2,7 @@
     <input type="text"
            id="search"
            controller="<?php module_url('table') ?>"
-           placeholder="<?php t('Укажите поисковый запрос')?>..."
+           placeholder="<?php t('Поисковый запрос')?>..."
            value="<?php iv('search')?>"
            name="template-search"
         >
