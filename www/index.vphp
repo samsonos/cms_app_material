@@ -21,7 +21,6 @@
     <!-- Pager block -->
     <?php if(isv('table_pager')):?>
         <ul class="table-pager">
-            <li><?php t('Отображать')?>:</li>
             <?php v('table_pager')?>
         </ul>
     <?php endif?>
