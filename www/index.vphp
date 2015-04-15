@@ -18,13 +18,6 @@
     </h1>
     <!-- End of Header block -->
 
-    <!-- Table search block -->
-    <form class="search" method="POST">
-        <input name="search" id="search" controller="<?php url_base('', 'id', 'table') ?>" placeholder="<?php t('Укажите поисковый запрос')?>..." value="<?php iv('search')?>">
-        <input type="hidden" class="loader-text" value="<?php t('Выполняется поиск...')?>">
-    </form>
-    <!-- End of Table search block -->
-
     <!-- Pager block -->
     <?php if(isv('table_pager')):?>
         <ul class="table-pager">
