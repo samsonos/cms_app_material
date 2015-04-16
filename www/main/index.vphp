@@ -5,3 +5,18 @@
 	</div>	
 	<div class="content"><?php v('rows')?></div>	
 </div>
+
+<div class="template-block">
+    <div class="template-block-header clearfix">
+        <div class="template-block-header-title">
+            <i class="icon2 icon-material"></i>
+            <?php t('Последние добавленные материалы')?>
+        </div>
+        <div class="template-block-header-controls">
+            <div class="icon2 icon2-times"></div>
+        </div>
+    </div>
+    <div class="template-block-content">
+        <?php v('rows')?>
+    </div>
+</div>
