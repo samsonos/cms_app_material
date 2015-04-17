@@ -2,6 +2,7 @@
 namespace samsoncms\app\material;
 
 use samson\activerecord\dbQuery;
+use samson\activerecord\dbRelation;
 use samson\cms\CMSNavMaterial;
 use samson\pager\Pager;
 use samson\cms\Material;
@@ -350,6 +351,7 @@ class Application extends App
             ->cond('Active', 1)
             ->cond('Draft', 0)
             ->order_by('Created', 'DESC')
+            ->cond('Name', "",dbRelation::NOT_EQUAL)
             ->limit(5)
             ->exec($dbMaterials)) {
 
