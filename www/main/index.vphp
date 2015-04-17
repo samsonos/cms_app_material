@@ -1,12 +1,4 @@
-<div class="bars_on_m material">
-	<div class="t t_with_i icon2 icon-material icon-left">
-        <?php t('Последние добавленные материалы')?>:
-		<a class="on_b_page" href="material" title="<?php t('Перейти к материалам cайта')?>"><?php t('Перейти к материалам')?></a>
-	</div>	
-	<div class="content"><?php v('rows')?></div>	
-</div>
-
-<div class="template-block">
+<div class="template-block template-block-main">
     <div class="template-block-header clearfix">
         <div class="template-block-header-title">
             <i class="icon2 icon-material"></i>
