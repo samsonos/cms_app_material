@@ -1,7 +1,7 @@
 <div class="template-block template-block-main">
     <div class="template-block-header clearfix">
         <div class="template-block-header-title">
-            <i class="icon2 icon-material"></i>
+            <a href="<?php module_url('id')?>" class="icon2 icon-material"></a>
             <?php t('Последние добавленные материалы')?>
         </div>
         <div class="template-block-header-controls">
