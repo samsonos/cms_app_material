@@ -8,6 +8,7 @@ use samson\core\SamsonLocale;
 use samson\activerecord\dbQuery;
 use samson\pager\Pager;
 use samson\activerecord\dbMySQLConnector;
+use samsonphp\event\Event;
 
 /**
  * Class for rendering SamsonCMS Field table
