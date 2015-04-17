@@ -146,16 +146,18 @@ class FormFieldTable extends \samson\cms\table\Table
         $input = null;
 
         // Depending on field type
-        if ($db_field->Type < 8) {
+        if ($db_field->Type != 9) {
             // Create input element for field
             $input = m('samsoncms_input_application')->createFieldByType($this->dbQuery, $db_field->Type, $db_mf);
         } else {
             return false;
         }
         if ($db_field->Type == 4) {
-            /** @var \samsoncms\input\select\Appliaction $input Input select type */
+            /** @var \samsoncms\input\select\Application $input Input select type */
             $input->build($db_field->Value);
         }
+
+        Event::fire('samson.cms.web.material.input', array($db_field, & $input, & $db_mf, & $this->dbQuery));
 
         // Render field row
         return m('material')
