@@ -25,6 +25,9 @@ class Application extends App
 
     /** Application name */
     public $name = 'Материалы';
+	
+	// Collection class with specified namespace
+    public $collectionClass = '\samsoncms\app\material\Collection';
 
     /** Identifier */
     protected $id = 'material';
@@ -239,7 +242,7 @@ class Application extends App
         );
 
         // Create material collection
-        $collection = new Collection($this, new dbQuery(), $pager);
+        $collection = new $this->collectionClass($this, new dbQuery(), $pager);
 
         return array_merge(
             array('status' => 1),
