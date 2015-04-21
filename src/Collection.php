@@ -76,7 +76,7 @@ class Collection extends Paged
         return $this->renderer
             ->view($this->itemView)
             ->set($item, 'item')
-            ->set($item->onetoone['_user'], 'user')
+            ->set(isset($item->onetoone['_user']) ? $item->onetoone['_user'] : array(), 'user')
             ->set('structures', $structureHTML)
             ->set('currentPage', $this->pager->current_page)
             ->set('search', $search)
