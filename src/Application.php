@@ -95,7 +95,7 @@ class Application extends App
             $material->Created = date('Y-m-d H:m:s');
 
             $user = m('social')->user();
-            $material->UserID = $user->UserID;
+            $material->UserID = $user->user_id;
             $material->save();
 
             // Set new material as current

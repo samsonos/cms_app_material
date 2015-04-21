@@ -33,7 +33,7 @@
     <?php } ?>
 	<li>
 		<label><?php t('Автор')?>:</label>
-		<div class="input-text disabled"><input id="user_name" name="user_name" value="<?php v('user_SName')?> <?php v('user_FName')?>" disabled></div></li>
+		<div class="input-text disabled"><input id="user_name" name="user_name" value="<?php v('user_s_name')?> <?php v('user_f_name')?>" disabled></div></li>
 	<li>
 
 </ul>
