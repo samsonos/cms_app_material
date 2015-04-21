@@ -1,4 +1,4 @@
-<div id="list" class="table2 material-list">
+<div id="list" class="table2 material-list default">
     <div class="table2-header-row table2-row">
         <div class="table2-col table2-header-col id">#</div>
         <div class="table2-col table2-header-col name"><?php t('Название')?> / <?php t('Черновик')?></div>
