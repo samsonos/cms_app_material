@@ -16,6 +16,7 @@
         <i class="icon2 icon_16x16 left icon-material"></i>
         <?php t('Материалы')?>
     </h1>
+    <?php echo m('template')->view('container/list/panel')->output()?>
     <!-- End of Header block -->
 
     <!-- Pager block -->
