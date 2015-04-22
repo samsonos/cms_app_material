@@ -1,4 +1,4 @@
-<section class="material">
+<section class="material" id="<?php iv('id')?>">
     <h1>Раздел "Материалы"</h1>
     <article class="main">
         <h2><a id="main">Общее описание</a></h2>
