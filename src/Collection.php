@@ -10,13 +10,13 @@ namespace samsoncms\app\material;
 use samson\activerecord\dbQuery;
 use samson\pager\Pager;
 use samsonframework\orm\QueryInterface;
-use samsonos\cms\collection\Paged;
+use samsonos\cms\collection\Filtered;
 
 /**
  * Collection of materials
  * @package samsonos\cms\app\material
  */
-class Collection extends Paged
+class Collection extends Filtered
 {
     public $indexView = 'www/list/index';
     public $itemView = 'www/list/item/index';
