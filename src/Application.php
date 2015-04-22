@@ -18,7 +18,7 @@ use samson\cms\App;
  *
  * @package samson\cms\web\material
  */
-class Application extends App
+class Application extends \samsoncms\Application
 {
     /** View materials table prefix */
     const VIEW_TABLE_NAME = 'table';
