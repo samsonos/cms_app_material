@@ -1,6 +1,6 @@
 {
-    "name":"samsonos/cms_app_material",
-    "description":"SamsonCMS Material application",
+    "name":"samsoncms/material",
+    "description":"SamsonCMS material application",
     "author":"Vitaly Iegorov <egorov@samsonos.com>",
     "require":{
         "samsonos/cms_app": "*",
@@ -18,7 +18,7 @@
     "homepage":"http://samsonos.com/",
     "autoload": {
         "classmap": ["src/"],
-        "psr-0": {
+        "psr-4": {
             "samsoncms\\app\\material": "src/"
         }
     }
