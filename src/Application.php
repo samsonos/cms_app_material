@@ -229,7 +229,7 @@ class Application extends App
         $search = !empty($search) ? $search  : 0;
         $page = isset($page ) ? $page : 1;
 
-        // We must always receive at least one navigataion id to filter materials
+        // We must always receive at least one navigation id to filter materials
         $navigationIds = isset($navigationId) && !empty($navigationId)
             ? array($navigationId)
             : dbQuery('structure')->fieldsNew('StructureID'); // Use all navigation entities as filter
