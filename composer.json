@@ -1,25 +1,26 @@
 {
-    "name":"samsoncms/material",
-    "description":"SamsonCMS material application",
-    "author":"Vitaly Iegorov <egorov@samsonos.com>",
-    "require":{
-        "samsoncms/application": "*",
-        "samsonos/cms_table": "*",
-        "samsonos/cms_input": "*",
-        "samsonos/cms_input_text": "*",
-        "samsonos/cms_input_date": "*",
-        "samsonos/cms_input_material": "*",
-        "samsonos/cms_input_select": "*",
-        "samsonos/cms_input_upload": "*",
-        "samsonos/cms_input_wysiwyg": "*",
-        "samsonos/cms_input_number": "*"
-    },
-    "license":"Open Software License (OSL) v 3.0",
-    "homepage":"http://samsonos.com/",
-    "autoload": {
-        "classmap": ["src/"],
-        "psr-4": {
-            "samsoncms\\app\\material\\": "src/"
-        }
+  "name": "samsoncms/material",
+  "description": "SamsonCMS material application",
+  "author": "Vitaly Iegorov <egorov@samsonos.com>",
+  "require": {
+    "samsoncms/application": "*",
+    "samsonos/cms_table": "*",
+    "samsonos/cms_input": "*",
+    "samsonos/cms_input_text": "*",
+    "samsonos/cms_input_date": "*",
+    "samsonos/cms_input_material": "*",
+    "samsonos/cms_input_select": "*",
+    "samsonos/cms_input_upload": "*",
+    "samsonos/cms_input_wysiwyg": "*",
+    "samsonos/cms_input_number": "*"
+  },
+  "minimum-stability": "dev",
+  "license": "Open Software License (OSL) v 3.0",
+  "homepage": "http://samsonos.com/",
+  "autoload": {
+    "classmap": ["src/"],
+    "psr-4": {
+      "samsoncms\\app\\material\\": "src/"
     }
+  }
 }
