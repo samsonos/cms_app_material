@@ -3,7 +3,7 @@
     "description":"SamsonCMS material application",
     "author":"Vitaly Iegorov <egorov@samsonos.com>",
     "require":{
-        "samsonos/cms_app": "*",
+        "samsoncms/application": "*",
         "samsonos/cms_table": "*",
         "samsonos/cms_input": "*",
         "samsonos/cms_input_text": "*",
