@@ -13,7 +13,9 @@
     "samsonos/cms_input_upload": "*",
     "samsonos/cms_input_wysiwyg": "*",
     "samsonos/cms_input_number": "*",
-    "samsonos/js_translit":"*"
+    "samsonos/js_translit":"*",
+    "samsonos/js_fixedheader":"*",
+    "samsonos/js_tabs":"*"
   },
   "minimum-stability": "dev",
   "license": "Open Software License (OSL) v 3.0",
