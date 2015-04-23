@@ -53,13 +53,10 @@ class Collection extends \samsoncms\MetaCollection
     }
 
     /** {@inheritdoc} */
-    public function __construct($renderer, $query = null, $pager = null, $navigation = array())
+    public function __construct($renderer, $query = null, $pager = null)
     {
         // Call parents
         parent::__construct($renderer, $query, $pager);
-
-        // Set navigation filter
-        $this->navigation($navigation);
 
         // Call external handlers
         $this->entityHandler(array($this, 'joinTables'));
