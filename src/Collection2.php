@@ -8,6 +8,7 @@
 namespace samsoncms\app\material;
 
 use samsoncms\app\user\field\Navigation;
+use samsoncms\app\user\field\User;
 use samsonframework\orm\QueryInterface;
 use samsoncms\field\Generic;
 use samsoncms\field\Control;
@@ -70,7 +71,8 @@ class Collection2 extends \samsoncms\MetaCollection
             new Generic('Name', t('Наименование', true), 0),
             new Generic('Url', t('Идентификатор', true), 0),
             new Navigation(),
-            new Generic('Modyfied', t('Последнее изменение', true), 7),
+            new Generic('Modyfied', t('Последнее изменение', true), 7, 'modified', false),
+            new User(),
             new Control(),
         );
     }
