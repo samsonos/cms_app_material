@@ -8,6 +8,7 @@
 namespace samsoncms\app\material;
 
 use samsoncms\app\user\field\Navigation;
+use samsoncms\app\user\field\Publish;
 use samsoncms\app\user\field\User;
 use samsonframework\orm\QueryInterface;
 use samsoncms\field\Generic;
@@ -17,7 +18,7 @@ use samsoncms\field\Control;
  * Collection of materials
  * @package samsonos\cms\app\material
  */
-class Collection2 extends \samsoncms\MetaCollection
+class Collection extends \samsoncms\MetaCollection
 {
     /**
      * Function for joining tables to get some extra data in result set
@@ -72,6 +73,7 @@ class Collection2 extends \samsoncms\MetaCollection
             new Navigation(),
             new Generic('Modyfied', t('Последнее изменение', true), 7, 'modified', false),
             new User(),
+            new Publish(),
             new Control(),
         );
     }

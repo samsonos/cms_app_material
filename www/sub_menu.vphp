@@ -1,7 +1,7 @@
 <li class="template-sub-menu-search">
     <input type="text"
            id="search"
-           controller="<?php module_url('table') ?>"
+           controller="<?php module_url('collection') ?>"
            placeholder="<?php t('Поисковый запрос')?>..."
            value="<?php iv('search')?>"
            name="template-search"

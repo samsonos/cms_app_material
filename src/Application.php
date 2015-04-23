@@ -179,7 +179,7 @@ class Application extends \samsoncms\Application
 
             // Success
             $result['status'] = true;
-            $result[] = $this->__async_form($material->id);
+            $result[] = $this->__async_edit2($material->id);
         }
 
         // Fail
@@ -215,7 +215,7 @@ class Application extends \samsoncms\Application
         );
 
         // Create material collection
-        $collection = new Collection2($this, new dbQuery(), $pager, $navigationIds);
+        $collection = new Collection($this, new dbQuery(), $pager, $navigationIds);
 
         return array_merge(
             array('status' => 1),
