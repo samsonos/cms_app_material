@@ -1,0 +1,5 @@
+<div class="table2-col <?php iv('class') ?>">
+    <span>
+        <?php iv('navigation')?>
+    </span>
+</div>

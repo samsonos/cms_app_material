@@ -242,7 +242,8 @@ class Application extends App
         );
 
         // Create material collection
-        $collection = new $this->collectionClass($this, new dbQuery(), $pager);
+        //$collection = new $this->collectionClass($this, new dbQuery(), $pager);
+        $collection = new Collection2($this, new dbQuery(), $pager);
 
         return array_merge(
             array('status' => 1),
