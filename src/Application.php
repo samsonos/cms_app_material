@@ -6,9 +6,6 @@ use samson\activerecord\dbRelation;
 use samson\cms\CMSNavMaterial;
 use samson\pager\Pager;
 use samson\cms\Material;
-use samson\cms\App;
-
-/*use samsonos\cms\ui\MenuItem;*/
 
 /**
  * SamsonCMS generic material application.
@@ -18,15 +15,18 @@ use samson\cms\App;
  *
  * @package samson\cms\web\material
  */
-class Application extends App
+class Application extends \samsoncms\Application
 {
     /** View materials table prefix */
-    const VIEW_TABLE_NAME = 'table';
+    const VIEW_TABLE_NAME = 'collection';
 
     /** Application name */
     public $name = 'Материалы';
+
+    /** Application description */
+    public $description = 'Материалы';
 	
-	// Collection class with specified namespace
+	/** Collection class with specified namespace */
     public $collectionClass = '\samsoncms\app\material\Collection';
 
     /** Identifier */
@@ -38,44 +38,13 @@ class Application extends App
     /** Controllers */
 
     /**
-     * Generic controller
-     *
-     * @param int|null $navigationId Navigation identifier to get it's materials
-     * @param string|null $search Search string to find it's value in material fields
-     * @param int|null $page Page number
+     * Universal controller action.
+     * Entity collection rendering
      */
-    public function __handler($navigationId = null, $search = null, $page = null)
+    public function __handler($navigationId = '0', $search = '', $page = 1)
     {
-        // Generate localized title
-        $title = t($this->name, true);
-
-        // Set view scope
-        $renderer = $this->view('index');
-
-        // Try to find structure
-        if (isset($navigationId) && dbQuery('\samson\cms\Navigation')->id($navigationId)->first($navigationId)) {
-            // Add structure title
-            $title = t($navigationId->Name, true) . ' - ' . $title;
-
-            // Pass Navigation to view
-            $this->set($navigationId, 'navigation');
-        }
-
-        // Old-fashioned direct search input form POST if not passed
-        $search = !isset($search) ? (isset($_POST['search']) ? $_POST['search'] : '') : $search;
-
-        if (!isset($navigationId)) {
-            $this->set('all_materials', true);
-        }
-        if (is_object($navigationId)) {
-            $navigationId = $navigationId->id;
-        }
-
-        // Set view data
-        $renderer
-            ->title($title)
-            ->set('search', $search)
-            ->set($this->__async_table($navigationId, $search, $page));
+        // Pass all parameters to parent handler with default values
+        parent::__handler($navigationId, $search, $page);
     }
 
     /**
@@ -85,7 +54,25 @@ class Application extends App
      * If null is passed material creation form will be displayed
      * @param int|null $navigation Structure material belongs to.
      */
-    public function __form($materialId = null, $navigation = null)
+    public function __edit2($materialId = null, $navigation = null)
+    {
+        // Get form data
+        $form = $this->__async_edit2($materialId, $navigation);
+
+        // Render form
+        $this->html($form['form']);
+    }
+
+    /** Main logic */
+
+    /**
+     * Asynchronous controller for form rendering
+     *
+     * @param int|null $materialId Material identifier to build form.
+     * @param int|null $navigation WHY???
+     * @return array Asynchronous controller result
+     */
+    function __async_edit2($materialId = null, $navigation = null)
     {
         // If this is form for a new material with structure relation
         if ($materialId == 0 && isset($navigation)) {
@@ -118,29 +105,12 @@ class Application extends App
         // Create form object
         $form = new Form($materialId, $navigation);
 
-        if ($materialId == 0) {
-            $this->set('new_material', true);
-        }
-        // Render form
-        $this->html($form->render());
-    }
-
-    /** Main logic */
-
-    /**
-     * Asynchronous controller for form rendering
-     *
-     * @param int|null $materialId Material identifier to build form.
-     * @param int|null $navigation WHY???
-     * @return array Asynchronous controller result
-     */
-    function __async_form($materialId = null, $navigation = null)
-    {
-        // Create form object
-        $form = new Form($materialId);
-
         // Success
-        return array('status' => true, 'form' => $form->render(), 'url' => $this->id . '/form/' . $materialId);
+        return array(
+            'status' => true,
+            'form' => $form->render(),
+            'url' => $this->id . '/form/' . $materialId
+        );
     }
 
     /** Asynchronous controller for material save */
@@ -222,7 +192,7 @@ class Application extends App
      * @return array Asynchronous response containing status and materials list with pager on success
      * or just status on asynchronous controller failure
      */
-    public function __async_table($navigationId = '0', $search = '', $page = 1)
+    public function __async_collection($navigationId = '0', $search = '', $page = 1)
     {
         // Set filtration info
         $navigationId = isset($navigationId ) ? $navigationId : '0';
@@ -243,7 +213,7 @@ class Application extends App
 
         // Create material collection
         //$collection = new $this->collectionClass($this, new dbQuery(), $pager);
-        $collection = new Collection2($this, new dbQuery(), $pager);
+        $collection = new Collection2($this, new dbQuery(), $pager, $navigationIds);
 
         return array_merge(
             array('status' => 1),
@@ -291,7 +261,7 @@ class Application extends App
      * @param mixed $materialId Pointer to material object or material identifier
      * @return array Operation result data
      */
-    function __async_remove($materialId)
+    function __async_remove2($materialId)
     {
         /** @var Material $material */
         $material = null;
@@ -312,6 +282,7 @@ class Application extends App
             // Return error array
             $result['message'] = 'Material "' . $materialId . '" not found';
         }
+
         // Return asynchronous result
         return $result;
     }
@@ -378,5 +349,23 @@ class Application extends App
         }
         // Return material block HTML on main page
         return $mainPageHTML;
+    }
+
+    /** @deprecated Use  __async_collection(), will be removed soon */
+    function __async_table($navigationId = '0', $search = '', $page = 1)
+    {
+        return $this->__async_collection($navigationId, $search, $page);
+    }
+
+    /** @deprecated Use  __async_remove2(), will be removed soon */
+    function __async_remove($materialId = null, $navigation = null)
+    {
+        return $this->__async_remove2($materialId, $navigation);
+    }
+
+    /** @deprecated Use  __async_edit2(), will be removed soon */
+    function __async_form($materialId = null, $navigation = null)
+    {
+        return $this->__async_edit2($materialId, $navigation);
     }
 }
