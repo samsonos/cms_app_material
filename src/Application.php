@@ -25,21 +25,24 @@ class Application extends \samsoncms\Application
 
     /** Application description */
     public $description = 'Материалы';
-	
-	/** Collection class with specified namespace */
+
+    /** Collection class with specified namespace */
     public $collectionClass = '\samsoncms\app\material\Collection';
 
     /** Identifier */
     protected $id = 'material';
 
-    /** Table rows count */
-    protected $materialCount = 15;
+    /** Collection page size */
+    protected $pageSize = 15;
 
     /** Controllers */
 
     /**
-     * Universal controller action.
-     * Entity collection rendering
+     * Universal controller action.Entity collection rendering.
+     *
+     * @param string $navigationId Navigation filter
+     * @param string $search Search filter
+     * @param int $page Current page
      */
     public function __handler($navigationId = '0', $search = '', $page = 1)
     {
@@ -207,12 +210,11 @@ class Application extends \samsoncms\Application
         // Create pager for material collection
         $pager = new Pager(
             $page,
-            $this->materialCount,
+            $this->pageSize,
             $this->id . '/'.self::VIEW_TABLE_NAME.'/' . $navigationId . '/' . $search
         );
 
         // Create material collection
-        //$collection = new $this->collectionClass($this, new dbQuery(), $pager);
         $collection = new Collection2($this, new dbQuery(), $pager, $navigationIds);
 
         return array_merge(
