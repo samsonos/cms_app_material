@@ -19,10 +19,6 @@ use samsoncms\field\Control;
  */
 class Collection2 extends \samsoncms\MetaCollection
 {
-    //public $indexView = 'www/list/index';
-    //public $itemView = 'www/list/item/index';
-    public $emptyView = 'www/list/item/empty';
-
     /**
      * Function for joining tables to get some extra data in result set
      *
