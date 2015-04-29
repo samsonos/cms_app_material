@@ -10,6 +10,7 @@ class Dictionary implements IDictionary
         return array(
             "en"	=>array(
                 "Материалы"	=>	"Materials",
+                'Главная' => 'Main',
                 "Таблица материалов" => "Material table",
                 "Укажите поисковый запрос" => "Enter search query",
                 "Выполняется поиск..." => "Search performing...",
@@ -45,6 +46,15 @@ class Dictionary implements IDictionary
                 "Изменен" => "Modified",
                 "Опубликован ли материал" => "Is published",
                 "Опб" => "Pub",
+                "Управление" => "Management",
+                "Идентификатор" => "Identifier",
+                "Показывать" => "Show",
+                "Последнее изменение" => "Last changes",
+                "Список" => "List",
+                "Новый" => "New",
+                "Поисковый запрос" => "Search query",
+                "К списку" => "To list",
+                "Записать" => "Save",
                 "Управление материалом" => "Material management",
                 "В данный момент материалов нет"	=>	"Currently there is no material",
                 "создать"	=>	"create",
