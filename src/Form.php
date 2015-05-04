@@ -123,8 +123,8 @@ class Form
             $this->material->Draft = $this->material->id;
             $this->material->Name = 'Новый материал';
             $this->material->Created = date('h:m:i d.m.y');
-//			$this->material->UserID = auth()->user->id;
-            $this->material->UserID = m('social')->user()->UserID;
+//			$this->material->user_id = auth()->user->id;
+            $this->material->user_id = m('social')->user()->user_id;
             $this->material->Active = 1;
             $this->material->save();
             if (isset($parentStructure)) {
