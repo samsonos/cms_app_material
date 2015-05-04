@@ -7,9 +7,8 @@
  */
 namespace samsoncms\app\material;
 
-use samsoncms\app\user\field\Navigation;
-use samsoncms\app\user\field\Publish;
-use samsoncms\app\user\field\User;
+use samsoncms\app\material\field\Navigation;
+use samsoncms\app\material\field\User;
 use samsonframework\orm\QueryInterface;
 use samsoncms\field\Generic;
 use samsoncms\field\Control;
@@ -69,8 +68,8 @@ class Collection extends \samsoncms\MetaCollection
             new Generic('Url', t('Идентификатор', true), 0),
             new Navigation(),
             new Generic('Modyfied', t('Последнее изменение', true), 7, 'modified', false),
-            new User(),
-            new Publish(),
+            new User(),// Create object instance with fixed parameters
+            new Generic('Published', t('Показывать', true), 11, 'publish'),
             new Control(),
         );
     }

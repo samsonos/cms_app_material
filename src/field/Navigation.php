@@ -5,7 +5,7 @@
  * Date: 21.04.2015
  * Time: 14:52
  */
-namespace samsoncms\app\user\field;
+namespace samsoncms\app\material\field;
 
 use samsonframework\core\RenderInterface;
 use samsonframework\orm\QueryInterface;
