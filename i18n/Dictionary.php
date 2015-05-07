@@ -75,6 +75,7 @@ class Dictionary implements IDictionary
                 "Перейти к материалам cайта"	=>	"Go to site materials",
                 "Перейти к материалам"	=>	"Go to materials",
                 "от" => "by",
+                "Форма" => "Form",
             ),
             "ru"	=>array(
                 "Материалы"	=>	"",
