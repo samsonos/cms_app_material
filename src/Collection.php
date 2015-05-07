@@ -55,7 +55,7 @@ class Collection extends \samsoncms\MetaCollection
     public function __construct($renderer, $query = null, $pager = null)
     {
         // Call parents
-        parent::__construct($renderer, $query, $pager);
+        parent::__construct($renderer, $query, $pager, locale());
 
         // Call external handlers
         $this->entityHandler(array($this, 'joinTables'));
