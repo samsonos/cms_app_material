@@ -1,13 +1,13 @@
 <?php
 namespace samsoncms\app\material;
 
+use samson\activerecord\Condition;
 use samson\core\SamsonLocale;
 use samson\activerecord\dbRelation;
-use samson\activerecord\dbConditionGroup;
-use samson\activerecord\dbConditionArgument;
 use samson\cms\CMSMaterial;
 use samson\activerecord\dbMySQL;
 use samson\activerecord\dbMySQLConnector;
+use samsonframework\orm\Argument;
 
 /**
  * CMSMaterial form 
@@ -62,9 +62,9 @@ class Form
         // Variable to store navigation ids to get fields by them from structurefields
         $navigationForFields = array();
         // Add structure material condition
-        $scg = new dbConditionGroup('or');
-        $scg->arguments[] = new dbConditionArgument(dbMySQLConnector::$prefix . 'structurematerial_Active', 1);
-        $scg->arguments[] = new dbConditionArgument(dbMySQLConnector::$prefix . 'structurematerial_Active', NULL, dbRelation::ISNULL);
+        $scg = new Condition('or');
+        $scg->arguments[] = new Argument(dbMySQLConnector::$prefix . 'structurematerial_Active', 1);
+        $scg->arguments[] = new Argument(dbMySQLConnector::$prefix . 'structurematerial_Active', NULL, dbRelation::ISNULL);
 
         // Perform CMSMaterial request with related CMSNavs
         if (dbQuery(ns_classname('CMSMaterial', 'samson\cms'))
