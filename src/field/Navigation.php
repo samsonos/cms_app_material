@@ -38,9 +38,11 @@ class Navigation extends Generic
     {
         /** @var \samson\activerecord\structure $structure Material structures list */
         $html = array();
-        foreach ($object->onetomany['_structure'] as $structure) {
-            $html[] = '<a class="inner" title="' . t('Перейти к материалам ЭСС', true) .
-                '" href="' . url_build($renderer->id(), $structure->id) . '">' . $structure->Name . '</a>';
+        if (isset($object->onetomany['_structure'])) {
+            foreach ($object->onetomany['_structure'] as $structure) {
+                $html[] = '<a class="inner" title="' . t('Перейти к материалам ЭСС', true) .
+                    '" href="' . url_build($renderer->id(), $structure->id) . '">' . $structure->Name . '</a>';
+            }
         }
 
         // Render input field view

@@ -30,7 +30,7 @@ class Collection extends \samsoncms\MetaCollection
             ->order_by('Modyfied', 'DESC')
             ->join('structurematerial')
             ->join('structure')
-            ->cond('structure.system', 0)
+            //->cond('structure.system', 0)
         ;
     }
 
@@ -67,7 +67,7 @@ class Collection extends \samsoncms\MetaCollection
             new Generic('Name', t('Наименование', true), 0),
             new Generic('Url', t('Идентификатор', true), 0),
             new Navigation(),
-            new Generic('Modyfied', t('Последнее изменение', true), 7, 'modified', false),
+            new Generic('Modyfied', t('Последнее изменение', true), 7, 'modified', false, true),
             new User(),// Create object instance with fixed parameters
             new Generic('Published', t('Показывать', true), 11, 'publish'),
             new Control(),

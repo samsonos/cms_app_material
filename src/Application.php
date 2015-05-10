@@ -80,7 +80,7 @@ class Application extends \samsoncms\Application
         // If this is form for a new material with structure relation
         if ($materialId == 0 && isset($navigation)) {
             // Create new material db record
-            $material = new \samson\cms\CMSMaterial(false);
+            $material = db()->entity('\samson\cms\CMSMaterial');
             $material->Active = 1;
             $material->Created = date('Y-m-d H:m:s');
 
@@ -97,7 +97,7 @@ class Application extends \samsoncms\Application
             // Fill parent CMSNavigation relations for material
             foreach ($navigationArray as $navigation) {
                 // Create relation with structure
-                $structureMaterial = new \samson\activerecord\structurematerial(false);
+                $structureMaterial = new \samson\activerecord\structurematerial();
                 $structureMaterial->MaterialID = $material->id;
                 $structureMaterial->StructureID = $navigation;
                 $structureMaterial->Active = 1;
@@ -202,11 +202,6 @@ class Application extends \samsoncms\Application
         $search = !empty($search) ? $search  : 0;
         $page = isset($page ) ? $page : 1;
 
-        // We must always receive at least one navigation id to filter materials
-        $navigationIds = isset($navigationId) && !empty($navigationId)
-            ? array($navigationId)
-            : dbQuery('structure')->fieldsNew('StructureID'); // Use all navigation entities as filter
-
         // Create pager for material collection
         $pager = new Pager(
             $page,
@@ -215,12 +210,16 @@ class Application extends \samsoncms\Application
         );
 
         // Create material collection
-        $collection = new $this->collectionClass($this, new dbQuery(), $pager, $navigationIds);
+        $collection = new $this->collectionClass($this, new dbQuery(), $pager);
+
+        // Add navigation filter
+        if (isset($navigationId) && !empty($navigationId)) {
+            $collection = $collection->navigation(array($navigationId));
+        }
 
         return array_merge(
             array('status' => 1),
             $collection
-                ->navigation($navigationIds)
                 ->search($search)
                 ->fill()
                 ->toView(self::VIEW_TABLE_NAME . '_')
