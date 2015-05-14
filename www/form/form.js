@@ -48,7 +48,8 @@ var saveMain = function( redirect )
 	
 	// Create loader object
 	var loader = new Loader( form );
-	loader.show('Обновление формы',true);
+    s.trace(s('.form-save-loader').val());
+	loader.show(s('.form-save-loader').val(),true);
 	
 	// Async form send	
 	form.ajaxForm(function(response)
