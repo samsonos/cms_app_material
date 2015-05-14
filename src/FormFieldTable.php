@@ -2,8 +2,6 @@
 namespace samsoncms\app\material;
 
 use samson\activerecord\dbRelation;
-use samson\activerecord\dbConditionGroup;
-use samson\activerecord\dbConditionArgument;
 use samson\core\SamsonLocale;
 use samson\activerecord\dbQuery;
 use samson\pager\Pager;
