@@ -48,7 +48,7 @@ class Collection extends \samsoncms\MetaCollection
             ->cond('parent_id', 0)
             ->cond('Active', 1)
             ->order_by('Modyfied', 'DESC')
-            ->fieldsNew('MaterialID', $materialIds);
+            ->fields('MaterialID', $materialIds);
     }
 
     /** {@inheritdoc} */

@@ -105,7 +105,7 @@ class Table extends \samson\cms\table\Table
             $searchQuery->cond($searchCondition);
 
             // Get filtered identifiers
-            $filteredIDs = $searchQuery->fieldsNew('MaterialID');
+            $filteredIDs = $searchQuery->fields('MaterialID');
             $searchOrStructureFlag = true;
         }
 
@@ -146,7 +146,7 @@ class Table extends \samson\cms\table\Table
     }
 
     public function beforeHandler() {
-        $ids = $this->query->fieldsNew('MaterialID');
+        $ids = $this->query->fields('MaterialID');
 
         $this->query = dbQuery('\samson\cms\material')
             ->join('user')
