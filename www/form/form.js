@@ -48,7 +48,7 @@ var saveMain = function( redirect )
 	
 	// Create loader object
 	var loader = new Loader( form );
-    s.trace(s('.form-save-loader').val());
+
 	loader.show(s('.form-save-loader').val(),true);
 	
 	// Async form send	
