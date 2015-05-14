@@ -8,7 +8,6 @@
     "samsonos/cms_input_text": "*",
     "samsonos/cms_input_date": "*",
     "samsonos/cms_input_datetime": "*",
-    "samsonos/cms_input_material": "*",
     "samsonos/cms_input_select": "*",
     "samsonos/cms_input_upload": "*",
     "samsonos/cms_input_wysiwyg": "*",
