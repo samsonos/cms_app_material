@@ -60,6 +60,8 @@ class Dictionary implements IDictionary
                 "Материал" => "Material",
                 "Записать" => "Save",
                 "Удалить материал" => "Delete material",
+                "Удалить" => "Delete",
+                "Копировать" => "Copy",
                 "Открыть материал в новой вкладке" => "Open material in new tab",
                 "Управление материалом" => "Material management",
                 "В данный момент материалов нет"	=>	"Currently there is no material",
