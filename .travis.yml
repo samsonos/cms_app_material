@@ -113,7 +113,7 @@ before_script:
 
 script:
 #- bin/phpunit --coverage-clover=coverage.clover --coverage-text
- - vendor/bin/behat -c vendor/samsoncms/cms/behat.yml -p travis
+ - vendor/bin/behat -p travis
 
 after_failure:
   - sudo tail /var/log/apache2/error.log
