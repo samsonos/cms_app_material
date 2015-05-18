@@ -60,8 +60,6 @@ class Dictionary implements IDictionary
                 "Материал" => "Material",
                 "Записать" => "Save",
                 "Удалить материал" => "Delete material",
-                "Удалить" => "Delete",
-                "Копировать" => "Copy",
                 "Открыть материал в новой вкладке" => "Open material in new tab",
                 "Управление материалом" => "Material management",
                 "В данный момент материалов нет"	=>	"Currently there is no material",
@@ -78,8 +76,9 @@ class Dictionary implements IDictionary
                 "Перейти к материалам"	=>	"Go to materials",
                 "от" => "by",
                 "Форма" => "Edit form",
-                "По Вашему запросу ничего не найдено" => "Your search did not match",
-				"Обновление формы" => "Form updating"
+                "Элементов на странице" => "Items per page",
+                "Удалить" => "Delete",
+                "Копировать" => "Copy"
             ),
             "ru"	=>array(
                 "Материалы"	=>	"",
