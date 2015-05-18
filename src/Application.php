@@ -159,9 +159,10 @@ class Application extends \samsoncms\Application
             // Save object to DB
             $material->save();
 
+            $structureMaterials = dbQuery('structurematerial')->cond('MaterialID', $material->id)->exec();
             /** @var \samson\activerecord\structurematerial $structureMaterial Clear existing
              * relations between material and structures */
-            foreach (dbQuery('structurematerial')->cond('MaterialID', $material->id)->exec() as $structureMaterial) {
+            foreach ($structureMaterials as $structureMaterial) {
                 $structureMaterial->delete();
             }
 
@@ -197,6 +198,10 @@ class Application extends \samsoncms\Application
      */
     public function __async_collection($navigationId = '0', $search = '', $page = 1)
     {
+        if (isset($_GET['pagerSize'])) {
+            $_SESSION['pagerSize'] = $_GET['pagerSize'];
+            unset($_GET['pagerSize']);
+        }
         // Set filtration info
         $navigationId = isset($navigationId ) ? $navigationId : '0';
         $search = !empty($search) ? $search  : 0;
@@ -205,7 +210,7 @@ class Application extends \samsoncms\Application
         // Create pager for material collection
         $pager = new Pager(
             $page,
-            $this->pageSize,
+            isset($_SESSION['pagerSize']) ? $_SESSION['pagerSize'] :$this->pageSize,
             $this->id . '/'.self::VIEW_TABLE_NAME.'/' . $navigationId . '/' . $search
         );
 
