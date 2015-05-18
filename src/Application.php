@@ -198,8 +198,10 @@ class Application extends \samsoncms\Application
      */
     public function __async_collection($navigationId = '0', $search = '', $page = 1)
     {
+		// Save pager size in session
         if (isset($_GET['pagerSize'])) {
             $_SESSION['pagerSize'] = $_GET['pagerSize'];
+			// delete get parameter from pager links
             unset($_GET['pagerSize']);
         }
         // Set filtration info
