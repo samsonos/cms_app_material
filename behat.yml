@@ -1,0 +1,9 @@
+imports:
+  #import SamsonCMS behat config
+  - vendor/samsoncms/cms/behat.yml
+
+default:
+  suites:
+    default:
+      contexts:
+        - MaterialFeatureContext

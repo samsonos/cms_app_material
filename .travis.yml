@@ -49,12 +49,12 @@ before_script:
   - if [ "$TRAVIS_PHP_VERSION" != "hhvm" ]; then sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf; fi
   - if [ "$TRAVIS_PHP_VERSION" != "hhvm" ]; then echo "cgi.fix_pathinfo = 1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini; fi
   - if [ "$TRAVIS_PHP_VERSION" != "hhvm" ]; then ~/.phpenv/versions/$(phpenv version-name)/sbin/php-fpm; fi
-  - if [ "$TRAVIS_PHP_VERSION" != "hhvm" ]; then sudo cp -f vendor/samsoncms/cms/ci/travis-apache-vhost /etc/apache2/sites-available/default; fi
+  - if [ "$TRAVIS_PHP_VERSION" != "hhvm" ]; then sudo cp -f ci/travis-apache-vhost /etc/apache2/sites-available/default; fi
   # show php-fpm config
   - if [ "$TRAVIS_PHP_VERSION" != "hhvm" ]; then cat ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf; fi
 
   # configure apache for hhvm
-  - if [ "$TRAVIS_PHP_VERSION" == "hhvm" ]; then sudo cp -f vendor/samsoncms/cms/ci/travis-hhvm-vhost /etc/apache2/sites-available/default; fi
+  - if [ "$TRAVIS_PHP_VERSION" == "hhvm" ]; then sudo cp -f ci/travis-hhvm-vhost /etc/apache2/sites-available/default; fi
   - if [ "$TRAVIS_PHP_VERSION" == "hhvm" ]; then sudo hhvm -m daemon -vServer.Type=fastcgi -vServer.Port=9000 -vServer.FixPathInfo=true; fi
 
   # rewrite path to www root folder
