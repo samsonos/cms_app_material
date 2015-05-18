@@ -1,30 +1,8 @@
+imports:
+  - vendor/samsoncms/cms/behat.yml
+
 default:
-  autoload:
-    - %paths.base%/features/bootstrap/
   suites:
     default:
       contexts:
         - MaterialFeatureContext
-  translation:
-    locale: en
-  extensions:
-    Behat\MinkExtension:
-      sessions:
-        default:
-          selenium2:
-            browser: phantomjs
-            wd_host: "http://localhost:8643/wd/hub"
-travis:
-  extensions:
-      Behat\MinkExtension:
-        base_url: 'http://samsoncms.local'
-
-scrutinizer:
-  extensions:
-      Behat\MinkExtension:
-        base_url: 'http://samsoncms.local'
-
-local:
-  extensions:
-    Behat\MinkExtension:
-      base_url: 'http://egorov.cms.local'
