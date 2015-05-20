@@ -1,10 +1,10 @@
 <VirtualHost *:80>
   ServerName samsoncms.local
-  DocumentRoot %TRAVIS_BUILD_DIR%/vendor/samsoncms/cms/www
+  DocumentRoot %TRAVIS_BUILD_DIR%/www/cms/www
 
   SetEnv APPLICATION_ENV    %APPLICATION_ENV%
 
-  <Directory "%TRAVIS_BUILD_DIR%/vendor/samsoncms/cms/www">
+  <Directory "%TRAVIS_BUILD_DIR%/www/cms/www">
     Options FollowSymLinks MultiViews ExecCGI
     AllowOverride All
     Order deny,allow
