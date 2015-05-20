@@ -46,7 +46,7 @@ before_script:
   - travis_retry composer install --prefer-source --no-interaction
 
   # SamsonCMS installation
-  - create-project --prefer-dist -s dev samsoncms/cms www/cms
+  - sudo composer create-project --prefer-dist -s dev samsoncms/cms www/cms
 
   # configure apache for php-fpm
   - if [ "$TRAVIS_PHP_VERSION" != "hhvm" ]; then sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf; fi
