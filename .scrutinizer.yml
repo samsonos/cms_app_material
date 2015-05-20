@@ -32,12 +32,16 @@ build:
     before:
        #- gunzip samsoncms.sql.gz
        - mysql -uroot -e "CREATE DATABASE samsoncms"
+       # import mysql data needed for tests
        #- mysql -uroot samsoncms < samsoncms.sql
        - mysql -uroot -e "CREATE USER 'samsonos'@'localhost' IDENTIFIED BY 'AzUzrcVe4LJJre9f'";
        - mysql -uroot -e "GRANT ALL PRIVILEGES ON *.* TO 'samsonos'@'localhost' WITH GRANT OPTION";
 
   project_setup:
       before:
+        - cd vendor/samsoncms/cms
+        - composer install --prefer-dist --no-interaction
+        - cd ../../../
         - command: 'phantomjs --webdriver=8643'
           background: true
         # run migrations
@@ -76,8 +80,3 @@ build:
         - wget http://samsoncms.local
         - wget http://samsoncms.local
 
-  tests:
-    before:
-      - cd vendor/samsoncms/cms
-      - composer install --prefer-dist --no-interaction
-      - cd ../../../
