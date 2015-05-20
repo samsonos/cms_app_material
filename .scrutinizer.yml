@@ -39,7 +39,10 @@ build:
 
   project_setup:
       before:
+        # copy already downloaded dependencies
+        - cd -a vendor/. vendor/samsoncms/cms/vendor
         - cd vendor/samsoncms/cms
+        # install SamsonCMS
         - composer install --prefer-dist --no-interaction
         - cd ../../../
         - command: 'phantomjs --webdriver=8643'
@@ -80,3 +83,6 @@ build:
         - wget http://samsoncms.local
         - wget http://samsoncms.local
 
+  tests:
+    override:
+      - 'vendor/bin/behat -p travis'
