@@ -40,7 +40,7 @@ build:
   project_setup:
     before:
       # install SamsonCMS
-      - composer create-project --prefer-dist -s dev samsoncms/cms www/cms
+      - composer create-project --prefer-source -s dev samsoncms/cms www/cms
       - command: 'phantomjs --webdriver=8643'
         background: true
       # run migrations
