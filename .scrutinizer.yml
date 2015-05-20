@@ -11,9 +11,68 @@ tools:
 filter:
     excluded_paths:
         - 'tests/*'
+        - 'fixtures/*'
 
 build:
-    environment:
-        php:
-            version: 5.5
+  project_setup:
+    before:
+      -
+        command: 'phantomjs --webdriver=8643'
+        background: true
+      # run migrations
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
 
+  dependencies:
+    before:
+       #- gunzip samsoncms.sql.gz
+       - mysql -uroot -e "CREATE DATABASE samsoncms"
+       #- mysql -uroot samsoncms < samsoncms.sql
+       - mysql -uroot -e "CREATE USER 'samsonos'@'localhost' IDENTIFIED BY 'AzUzrcVe4LJJre9f'";
+       - mysql -uroot -e "GRANT ALL PRIVILEGES ON *.* TO 'samsonos'@'localhost' WITH GRANT OPTION";
+
+  environment:
+    php:
+      version: 5.5
+    variables:
+        APPLICATION_ENV: test
+    hosts:
+      samsoncms.local: '127.0.0.1'
+    apache2:
+      modules: ['rewrite']
+      sites:
+        samsoncms:
+          web_root: 'vendor/samsoncms/cms/www/'
+          host: 'samsoncms.local'
