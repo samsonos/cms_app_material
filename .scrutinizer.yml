@@ -25,7 +25,7 @@ build:
         modules: ['rewrite']
         sites:
           samsoncms:
-            web_root: 'vendor/samsoncms/cms/www/'
+            web_root: 'www/cms/www/'
             host: 'samsoncms.local'
 
   dependencies:
@@ -40,7 +40,7 @@ build:
   project_setup:
       before:
         # install SamsonCMS
-        -
+        - create-project --prefer-dist -s dev samsoncms/cms www/cms
         - command: 'phantomjs --webdriver=8643'
           background: true
         # run migrations
