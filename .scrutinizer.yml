@@ -38,46 +38,46 @@ build:
        - mysql -uroot -e "GRANT ALL PRIVILEGES ON *.* TO 'samsoncms'@'localhost' WITH GRANT OPTION";
 
   project_setup:
-      before:
-        # install SamsonCMS
-        - composer create-project --prefer-dist -s dev samsoncms/cms www/cms
-        - command: 'phantomjs --webdriver=8643'
-          background: true
-        # run migrations
-        - wget http://samsoncms.local
-        - wget http://samsoncms.local
-        - wget http://samsoncms.local
-        - wget http://samsoncms.local
-        - wget http://samsoncms.local
-        - wget http://samsoncms.local
-        - wget http://samsoncms.local
-        - wget http://samsoncms.local
-        - wget http://samsoncms.local
-        - wget http://samsoncms.local
-        - wget http://samsoncms.local
-        - wget http://samsoncms.local
-        - wget http://samsoncms.local
-        - wget http://samsoncms.local
-        - wget http://samsoncms.local
-        - wget http://samsoncms.local
-        - wget http://samsoncms.local
-        - wget http://samsoncms.local
-        - wget http://samsoncms.local
-        - wget http://samsoncms.local
-        - wget http://samsoncms.local
-        - wget http://samsoncms.local
-        - wget http://samsoncms.local
-        - wget http://samsoncms.local
-        - wget http://samsoncms.local
-        - wget http://samsoncms.local
-        - wget http://samsoncms.local
-        - wget http://samsoncms.local
-        - wget http://samsoncms.local
-        - wget http://samsoncms.local
-        - wget http://samsoncms.local
-        - wget http://samsoncms.local
-        - wget http://samsoncms.local
-        - wget http://samsoncms.local
+    before:
+      # install SamsonCMS
+      - composer create-project --prefer-dist -s dev samsoncms/cms www/cms
+      - command: 'phantomjs --webdriver=8643'
+        background: true
+      # run migrations
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
 
   tests:
     override:
