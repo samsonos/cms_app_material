@@ -40,7 +40,7 @@ build:
   project_setup:
       before:
         # copy already downloaded dependencies
-        - cp -a vendor/. vendor/samsoncms/cms/vendor
+        #- cp -a vendor/. vendor/samsoncms/cms/vendor
         - cd vendor/samsoncms/cms
         # install SamsonCMS
         - composer install --prefer-dist --no-interaction
