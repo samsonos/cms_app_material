@@ -14,46 +14,19 @@ filter:
         - 'fixtures/*'
 
 build:
-  project_setup:
-    before:
-      -
-        command: 'phantomjs --webdriver=8643'
-        background: true
-      # run migrations
-      - wget http://samsoncms.local
-      - wget http://samsoncms.local
-      - wget http://samsoncms.local
-      - wget http://samsoncms.local
-      - wget http://samsoncms.local
-      - wget http://samsoncms.local
-      - wget http://samsoncms.local
-      - wget http://samsoncms.local
-      - wget http://samsoncms.local
-      - wget http://samsoncms.local
-      - wget http://samsoncms.local
-      - wget http://samsoncms.local
-      - wget http://samsoncms.local
-      - wget http://samsoncms.local
-      - wget http://samsoncms.local
-      - wget http://samsoncms.local
-      - wget http://samsoncms.local
-      - wget http://samsoncms.local
-      - wget http://samsoncms.local
-      - wget http://samsoncms.local
-      - wget http://samsoncms.local
-      - wget http://samsoncms.local
-      - wget http://samsoncms.local
-      - wget http://samsoncms.local
-      - wget http://samsoncms.local
-      - wget http://samsoncms.local
-      - wget http://samsoncms.local
-      - wget http://samsoncms.local
-      - wget http://samsoncms.local
-      - wget http://samsoncms.local
-      - wget http://samsoncms.local
-      - wget http://samsoncms.local
-      - wget http://samsoncms.local
-      - wget http://samsoncms.local
+  environment:
+      php:
+        version: 5.5
+      variables:
+          APPLICATION_ENV: test
+      hosts:
+        samsoncms.local: '127.0.0.1'
+      apache2:
+        modules: ['rewrite']
+        sites:
+          samsoncms:
+            web_root: 'vendor/samsoncms/cms/www/'
+            host: 'samsoncms.local'
 
   dependencies:
     before:
@@ -63,16 +36,48 @@ build:
        - mysql -uroot -e "CREATE USER 'samsonos'@'localhost' IDENTIFIED BY 'AzUzrcVe4LJJre9f'";
        - mysql -uroot -e "GRANT ALL PRIVILEGES ON *.* TO 'samsonos'@'localhost' WITH GRANT OPTION";
 
-  environment:
-    php:
-      version: 5.5
-    variables:
-        APPLICATION_ENV: test
-    hosts:
-      samsoncms.local: '127.0.0.1'
-    apache2:
-      modules: ['rewrite']
-      sites:
-        samsoncms:
-          web_root: 'vendor/samsoncms/cms/www/'
-          host: 'samsoncms.local'
+  project_setup:
+      before:
+        - command: 'phantomjs --webdriver=8643'
+          background: true
+        # run migrations
+        - wget http://samsoncms.local
+        - wget http://samsoncms.local
+        - wget http://samsoncms.local
+        - wget http://samsoncms.local
+        - wget http://samsoncms.local
+        - wget http://samsoncms.local
+        - wget http://samsoncms.local
+        - wget http://samsoncms.local
+        - wget http://samsoncms.local
+        - wget http://samsoncms.local
+        - wget http://samsoncms.local
+        - wget http://samsoncms.local
+        - wget http://samsoncms.local
+        - wget http://samsoncms.local
+        - wget http://samsoncms.local
+        - wget http://samsoncms.local
+        - wget http://samsoncms.local
+        - wget http://samsoncms.local
+        - wget http://samsoncms.local
+        - wget http://samsoncms.local
+        - wget http://samsoncms.local
+        - wget http://samsoncms.local
+        - wget http://samsoncms.local
+        - wget http://samsoncms.local
+        - wget http://samsoncms.local
+        - wget http://samsoncms.local
+        - wget http://samsoncms.local
+        - wget http://samsoncms.local
+        - wget http://samsoncms.local
+        - wget http://samsoncms.local
+        - wget http://samsoncms.local
+        - wget http://samsoncms.local
+        - wget http://samsoncms.local
+        - wget http://samsoncms.local
+
+  tests:
+    before:
+      - cd vendor/samsoncms/cms
+      - composer install --prefer-dist --no-interaction
+      - cd ../../../
