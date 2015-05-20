@@ -18,7 +18,6 @@
     "samsonos/js_tabs":"*"
   },
   "require-dev": {
-    "samsoncms/cms":"*",
     "behat/behat": "3.*@stable",
     "behat/mink": "1.6.*@stable",
     "behat/mink-extension": "@stable",
