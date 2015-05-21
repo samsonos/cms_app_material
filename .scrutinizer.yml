@@ -39,6 +39,7 @@ build:
 
   project_setup:
     before:
+      - ssh-add -L
       # install SamsonCMS
       - composer create-project --prefer-source --no-interaction -s dev samsoncms/cms www/cms
       -

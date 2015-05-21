@@ -10,7 +10,7 @@ use Behat\MinkExtension\Context\MinkContext;
 /**
  * Defines application features from the specific context.
  */
-class MaterialFeatureContext extends MinkContext implements Context, SnippetAcceptingContext
+class FeatureContext extends MinkContext implements Context, SnippetAcceptingContext
 {
     /**
      * Initializes context.
