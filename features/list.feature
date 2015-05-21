@@ -1,13 +1,15 @@
 Feature: SamsonCMS Material listing
   In order use SamsonCMS material application
-  As a visitor
   I need to be able to see list of material
 
-  Scenario: Open material list page
+  Background:
+    Given I am on homepage
+    And I am logged in as "admin@admin.com" with "admin@admin.com"
+
+  Scenario: Open empty material list page
     Given I am on homepage
     And print last response
-    And I am logged in as "admin@admin.com" with "admin@admin.com"
     And I am on "/material"
     And print last response
-    Then I should see 1 ".table2.default" elements
+    Then I should see 1 ".table2-row-empty" elements
 
