@@ -344,7 +344,7 @@ class Application extends \samsoncms\Application
             foreach ($dbMaterials as $dbMaterial) {
                 $rowsHTML .= $this->view('main/row')
                     ->set($dbMaterial, 'material')
-                    ->set($dbMaterial->onetoone['_user'], 'user')
+                    ->set(isset($dbMaterial->onetoone['_user']) ? $dbMaterial->onetoone['_user'] : array(), 'user')
                     ->output();
             }
 
