@@ -110,6 +110,7 @@ before_script:
   - wget http://samsoncms.local
   - wget http://samsoncms.local
   - wget http://samsoncms.local
+  - wget http://samsoncms.local
 
 
 script:
