@@ -271,13 +271,13 @@ class Application extends \samsoncms\Application
      */
     public function __async_remove2($materialId)
     {
-        /** @var Material $material */
+        /** @var Entity $material */
         $material = null;
         /** @var array $result Asynchronous controller result */
         $result = array('status' => false);
 
         // Get material safely
-        if (dbQuery('\samson\cms\Material')->id($materialId)->first($material)) {
+        if (Entity::byId(dbQuery('\samson\cms\Material'), $materialId, $material)) {
             // Mark material as deleted
             $material->Active = 0;
 
@@ -305,11 +305,11 @@ class Application extends \samsoncms\Application
     {
         /** @var array $result Asynchronous controller result */
         $result = array('status' => false);
-        /** @var \samson\cms\Material $material Material object to copy */
+        /** @var Entity $material Material object to copy */
         $material = null;
 
         // Get material safely
-        if (dbQuery('\samson\cms\Material')->id($materialId)->first($material)) {
+        if (Entity::byId(dbQuery('\samson\cms\Material'), $materialId, $material)) {
             // Copy found material
             $material->copy();
             // Set success status
