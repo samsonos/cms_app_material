@@ -75,10 +75,10 @@ class Application extends \samsoncms\Application
      * @param int|null $navigation WHY???
      * @return array Asynchronous controller result
      */
-    function __async_edit2($materialId = null, $navigation = null)
+    public function __async_edit2($materialId = null, $navigation = null)
     {
         // If this is form for a new material with structure relation
-        if ($materialId == 0 && isset($navigation)) {
+        if ($materialId === 0 && isset($navigation)) {
             // Create new material db record
             $material = db()->entity('\samson\cms\CMSMaterial');
             $material->Active = 1;
@@ -100,7 +100,7 @@ class Application extends \samsoncms\Application
                 $structureMaterial = new \samson\activerecord\structurematerial();
                 $structureMaterial->MaterialID = $material->id;
                 $structureMaterial->StructureID = $navigation;
-                $structureMaterial->Active = 1;
+                $structureMaterial->Active = '1';
                 $structureMaterial->save();
             }
         }
@@ -117,7 +117,7 @@ class Application extends \samsoncms\Application
     }
 
     /** Asynchronous controller for material save */
-    function __async_save()
+    public function __async_save()
     {
         /** @var array $result Asynchronous controller result */
         $result = array('status' => false);
@@ -134,7 +134,7 @@ class Application extends \samsoncms\Application
             } else { // New material creation
                 // Fill creation ts
                 $material->Created = date('Y-m-d H:m:s');
-                $material->Active = 1;
+                $material->Active = '1';
             }
 
             // Set material modification date
@@ -173,7 +173,7 @@ class Application extends \samsoncms\Application
                     $sm = new CMSNavMaterial(false);
                     $sm->MaterialID = $material->id;
                     $sm->StructureID = $structureId;
-                    $sm->Active = 1;
+                    $sm->Active = '1';
                     $sm->save();
                 }
             }
@@ -198,22 +198,22 @@ class Application extends \samsoncms\Application
      */
     public function __async_collection($navigationId = '0', $search = '', $page = 1)
     {
-		// Save pager size in session
+        // Save pager size in session
         if (isset($_GET['pagerSize'])) {
             $_SESSION['pagerSize'] = $_GET['pagerSize'];
-			// delete get parameter from pager links
+            // delete get parameter from pager links
             unset($_GET['pagerSize']);
         }
         // Set filtration info
-        $navigationId = isset($navigationId ) ? $navigationId : '0';
-        $search = !empty($search) ? $search  : 0;
-        $page = isset($page ) ? $page : 1;
+        $navigationId = isset($navigationId) ? $navigationId : '0';
+        $search = !empty($search) ? $search : 0;
+        $page = isset($page) ? $page : 1;
 
         // Create pager for material collection
         $pager = new Pager(
             $page,
-            isset($_SESSION['pagerSize']) ? $_SESSION['pagerSize'] :$this->pageSize,
-            $this->id . '/'.self::VIEW_TABLE_NAME.'/' . $navigationId . '/' . $search
+            isset($_SESSION['pagerSize']) ? $_SESSION['pagerSize'] : $this->pageSize,
+            $this->id . '/' . self::VIEW_TABLE_NAME . '/' . $navigationId . '/' . $search
         );
 
         // Create material collection
@@ -265,11 +265,11 @@ class Application extends \samsoncms\Application
 
     /**
      * Delete material
-     * 
+     *
      * @param mixed $materialId Pointer to material object or material identifier
      * @return array Operation result data
      */
-    function __async_remove2($materialId)
+    public function __async_remove2($materialId)
     {
         /** @var Material $material */
         $material = null;
@@ -301,7 +301,7 @@ class Application extends \samsoncms\Application
      * @param mixed $materialId Pointer to material object or material identifier
      * @return array Operation result data
      */
-    function __async_copy($materialId)
+    public function __async_copy($materialId)
     {
         /** @var array $result Asynchronous controller result */
         $result = array('status' => false);
@@ -334,9 +334,10 @@ class Application extends \samsoncms\Application
             ->cond('Active', 1)
             ->cond('Draft', 0)
             ->order_by('Created', 'DESC')
-            ->cond('Name', "",dbRelation::NOT_EQUAL)
+            ->cond('Name', "", dbRelation::NOT_EQUAL)
             ->limit(5)
-            ->exec($dbMaterials)) {
+            ->exec($dbMaterials)
+        ) {
 
 
             // Render material rows
@@ -360,19 +361,19 @@ class Application extends \samsoncms\Application
     }
 
     /** @deprecated Use  __async_collection(), will be removed soon */
-    function __async_table($navigationId = '0', $search = '', $page = 1)
+    public function __async_table($navigationId = '0', $search = '', $page = 1)
     {
         return $this->__async_collection($navigationId, $search, $page);
     }
 
     /** @deprecated Use  __async_remove2(), will be removed soon */
-    function __async_remove($materialId = null, $navigation = null)
+    public function __async_remove($materialId = null, $navigation = null)
     {
         return $this->__async_remove2($materialId, $navigation);
     }
 
     /** @deprecated Use  __async_edit2(), will be removed soon */
-    function __async_form($materialId = null, $navigation = null)
+    public function __async_form($materialId = null, $navigation = null)
     {
         return $this->__async_edit2($materialId, $navigation);
     }
