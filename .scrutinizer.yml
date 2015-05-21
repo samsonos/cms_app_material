@@ -16,7 +16,7 @@ filter:
 build:
   environment:
       php:
-        version: 5.5
+        version: 5.3
       variables:
           APPLICATION_ENV: test
       hosts:
