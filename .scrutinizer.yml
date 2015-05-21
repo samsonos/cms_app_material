@@ -46,6 +46,8 @@ build:
       - cp -R vendor/. www/cms/vendor
       - cd www/cms
       - composer install --no-interaction
+      - cd ..
+      - cd ..
       - command: 'phantomjs --webdriver=8643'
         background: true
       # run migrations
