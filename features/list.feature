@@ -4,6 +4,7 @@ Feature: SamsonCMS Material listing
 
   Background:
     Given I am on homepage
+    And print last response
     And I am logged in as "admin@admin.com" with "admin@admin.com"
 
   Scenario: Open empty material list page
