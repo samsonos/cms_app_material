@@ -241,13 +241,13 @@ class Application extends \samsoncms\Application
      */
     public function __async_publish($materialId)
     {
-        /** @var Material $material SamsonCMS Material object */
+        /** @var Entity $material SamsonCMS Material object */
         $material = null;
         /** @var array $result Asynchronous controller result */
         $result = array('status' => false);
 
         // Get material safely
-        if (dbQuery('\samson\cms\Material')->id($materialId)->first($material)) {
+        if (Entity::byId(dbQuery('\samson\cms\Material'), $materialId, $material)) {
             // Toggle material published status
             $material->Published = $material->Published ? 0 : 1;
 
