@@ -42,8 +42,7 @@ build:
     before:
       # install SamsonCMS
       - composer create-project --prefer-source --no-interaction -s dev samsoncms/cms www/cms
-      -
-        command: 'phantomjs --webdriver=8643'
+      - command: 'phantomjs --webdriver=8643'
         background: true
       # run migrations
       - wget http://samsoncms.local
