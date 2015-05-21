@@ -31,5 +31,8 @@
     "psr-4": {
       "samsoncms\\app\\material\\": "src/"
     }
+  },
+  "config":{
+    "github-protocols":["https"]
   }
 }
