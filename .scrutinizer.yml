@@ -31,13 +31,14 @@ build:
 
   dependencies:
     before:
-       #- gunzip samsoncms.sql.gz
-       - mysql -uroot -e "CREATE DATABASE samsoncms"
 
-       # import mysql data needed for tests
-       #- mysql -uroot samsoncms < samsoncms.sql
+       - mysql -uroot -e "CREATE DATABASE samsoncms"
        - mysql -uroot -e "CREATE USER 'samsoncms'@'localhost' IDENTIFIED BY 'samsoncms'";
        - mysql -uroot -e "GRANT ALL PRIVILEGES ON *.* TO 'samsoncms'@'localhost' WITH GRANT OPTION";
+       # import mysql data needed for tests
+       - gunzip samsoncms.sql.gz
+       - mysql -uroot samsoncms < samsoncms.sql
+
 
   project_setup:
     before:

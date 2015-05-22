@@ -75,9 +75,12 @@ before_script:
 
   # import base SQL data
   - mysql -e 'create database samsoncms;'
-  #- mysql ${DB_NAME} < tests/sql/init.sql
   - mysql -uroot -e "CREATE USER 'samsoncms'@'localhost' IDENTIFIED BY 'samsoncms'";
   - mysql -uroot -e "GRANT ALL PRIVILEGES ON *.* TO 'samsoncms'@'localhost' WITH GRANT OPTION";
+  # import mysql data needed for tests
+  - gunzip samsoncms.sql.gz
+  - mysql -uroot samsoncms < samsoncms.sql
+
 
   # Start phantomjs
   - phantomjs --webdriver=8643 &
