@@ -3,12 +3,7 @@ Feature: SamsonCMS material application
   Background:
     Given I am on homepage
     And I log out
-    And I am on "/signin"
-    When I fill in "email" with "admin@admin.com"
-    And I fill in "password" with "vovan123"
-    And I press "btn-signin"
-    And I wait for ajax response
-    Then I should be on homepage
+    And I am logged in as "admin@admin.com" with "admin@admin.com"
     Given I am on "/material"
 
   Scenario: Material list rendering
