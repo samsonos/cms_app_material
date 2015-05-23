@@ -43,7 +43,6 @@ build:
   project_setup:
     before:
       # install SamsonCMS
-      #- composer create-project --prefer-dist --no-interaction -s dev samsoncms/cms www/cms
       - git clone http://github.com/samsoncms/cms www/cms
       - cp -R vendor/. www/cms/vendor
       - cd www/cms
