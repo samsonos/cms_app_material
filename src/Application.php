@@ -234,6 +234,30 @@ class Application extends \samsoncms\Application
     }
 
     /**
+     * Perform material search by identifier and fulfill asynchronous
+     * response array.
+     * @param int|string $materialId Material entity identifier
+     * @param mixed $material Found material return value
+     * @param array $result Fulfilled asynchronous response array retrun value
+     * @return bool True if material has been found
+     */
+    public function asyncMaterialAction($materialId, & $material = null, & $result = array())
+    {
+        /** @var array $result Asynchronous controller result */
+        $result = array('status' => false);
+
+        // Get material safely
+        if (Entity::byId(dbQuery('\samson\cms\Material'), $materialId, $material)) {
+            $result['status'] = true;
+            return true;
+        } else { // Return error array
+            $result['message'] = 'Material "' . $materialId . '" not found';
+            // Return asynchronous result
+            return false;
+        }
+    }
+
+    /**
      * Publish/Unpublish material
      *
      * @param mixed $materialId Pointer to material object or material identifier
@@ -241,24 +265,20 @@ class Application extends \samsoncms\Application
      */
     public function __async_publish($materialId)
     {
-        /** @var Entity $material SamsonCMS Material object */
-        $material = null;
         /** @var array $result Asynchronous controller result */
         $result = array('status' => false);
+        /** @var Entity $material SamsonCMS Material object */
+        $material = null;
 
-        // Get material safely
-        if (Entity::byId(dbQuery('\samson\cms\Material'), $materialId, $material)) {
+        // Call default async action
+        if ($this->asyncMaterialAction($materialId, $material, $result)) {
             // Toggle material published status
             $material->Published = $material->Published ? 0 : 1;
 
             // Save changes to DB
             $material->save();
-
-            // Действие не выполнено
-            $result['status'] = true;
-        } else { // Return error array
-            $result['message'] = 'Material "' . $materialId . '" not found';
         }
+
         // Return asynchronous result
         return $result;
     }
@@ -276,19 +296,13 @@ class Application extends \samsoncms\Application
         /** @var array $result Asynchronous controller result */
         $result = array('status' => false);
 
-        // Get material safely
-        if (Entity::byId(dbQuery('\samson\cms\Material'), $materialId, $material)) {
+        // Call default async action
+        if ($this->asyncMaterialAction($materialId, $material, $result)) {
             // Mark material as deleted
             $material->Active = 0;
 
             // Save changes to DB
             $material->save();
-
-            // Set success event status
-            $result['status'] = true;
-        } else {
-            // Return error array
-            $result['message'] = 'Material "' . $materialId . '" not found';
         }
 
         // Return asynchronous result
@@ -308,14 +322,10 @@ class Application extends \samsoncms\Application
         /** @var Entity $material Material object to copy */
         $material = null;
 
-        // Get material safely
-        if (Entity::byId(dbQuery('\samson\cms\Material'), $materialId, $material)) {
+        // Call default async action
+        if ($this->asyncMaterialAction($materialId, $material, $result)) {
             // Copy found material
             $material->copy();
-            // Set success status
-            $result['status'] = true;
-        } else {  // Set error message
-            $result['message'] = 'Material "' . $materialId . '" not found';
         }
 
         // Return asynchronous result
