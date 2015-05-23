@@ -51,7 +51,7 @@ build:
       - cd ..
       - cd ..
       # as scrutinizer caches only root vendor folder - copy all dependencies back
-      #- cp -R www/cms/vendor/. vendor/
+      - sudo cp -R www/cms/vendor/. vendor/
       - command: 'phantomjs --webdriver=8643'
         background: true
       # run migrations
