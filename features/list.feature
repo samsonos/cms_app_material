@@ -4,7 +4,8 @@ Feature: SamsonCMS material application
     Given I am on homepage
     And I log out
     And I am logged in as "admin@admin.com" with "admin@admin.com"
-    Given I am on "/material"
+    And I am on "/material"
+    And show last response
 
   Scenario: Material list rendering
     #Given We have filled material table
