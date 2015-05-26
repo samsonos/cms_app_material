@@ -31,24 +31,26 @@ build:
 
   dependencies:
     before:
-       #- gunzip samsoncms.sql.gz
-       - mysql -uroot -e "CREATE DATABASE samsoncms"
 
-       # import mysql data needed for tests
-       #- mysql -uroot samsoncms < samsoncms.sql
+       - mysql -uroot -e "CREATE DATABASE samsoncms"
        - mysql -uroot -e "CREATE USER 'samsoncms'@'localhost' IDENTIFIED BY 'samsoncms'";
        - mysql -uroot -e "GRANT ALL PRIVILEGES ON *.* TO 'samsoncms'@'localhost' WITH GRANT OPTION";
+       # import mysql data needed for tests
+       - gunzip samsoncms.sql.gz
+       - mysql -uroot samsoncms < samsoncms.sql
+
 
   project_setup:
     before:
       # install SamsonCMS
-      #- composer create-project --prefer-dist --no-interaction -s dev samsoncms/cms www/cms
       - git clone http://github.com/samsoncms/cms www/cms
       - cp -R vendor/. www/cms/vendor
       - cd www/cms
       - composer install --no-interaction
       - cd ..
       - cd ..
+      # as scrutinizer caches only root vendor folder - copy all dependencies back
+      - sudo cp -R www/cms/vendor/. vendor/
       - command: 'phantomjs --webdriver=8643'
         background: true
       # run migrations
