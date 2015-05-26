@@ -1,1 +1,3 @@
-<tr><td colspan="7"><?php t('В данный момент дополнительных полей не найдено')?>, <a href="field/form"><?php t('создать')?></a>?</td></tr>
+<div class="table2-row table2-row-empty">
+    <?php t('В данный момент дополнительных полей не найдено')?>
+</div>

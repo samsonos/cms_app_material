@@ -1,11 +1,11 @@
 <div class="__field_table_block" style="width: 100%; height: 100%; overflow-y: auto">
-    <table class="__samsoncms_table field_table">
-        <thead>
-            <tr>
-                <th class="name"><?php t('Параметр')?></th>
-                <th class="value"><?php t('Значение')?></th>
-            </tr>
-        </thead>
-        <tbody><?php v('rows'); ?></tbody>
-    </table>
+    <div class="table2 default field_table">
+        <div class="table2-row table2-header-row">
+            <div class="table2-col table2-header-col name"><?php t('Параметр')?></div>
+            <div class="table2-col table2-header-col value"><?php t('Значение')?></div>
+        </div>
+        <div class="table2-body">
+            <?php v('rows'); ?>
+        </div>
+    </div>
 </div>

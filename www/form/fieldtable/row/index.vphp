@@ -1,4 +1,4 @@
-<tr>	
-	<td class="name"><?php v('fieldname') ?></td>	
-	<td class="value"><?php v('cmsfield_html');?></td>			
-</tr>
+<div class="table2-row">
+	<div class="table2-col name"><?php v('fieldname') ?></div>
+	<div class="table2-col value"><?php v('cmsfield_html');?></div>
+</div>
