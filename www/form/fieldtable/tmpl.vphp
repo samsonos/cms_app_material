@@ -1,5 +1,5 @@
 <div class="__field_table_block" style="width: 100%; height: 100%; overflow-y: auto">
-    <div class="table2 default field_table">
+    <div class="table2 default custom-table2 field_table">
         <div class="table2-row table2-header-row">
             <div class="table2-col table2-header-col name"><?php t('Параметр')?></div>
             <div class="table2-col table2-header-col value"><?php t('Значение')?></div>
