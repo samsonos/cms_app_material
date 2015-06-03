@@ -5,9 +5,10 @@ Feature: SamsonCMS material application
     And I log out
     And I am logged in as "test@test.com" with "123"
     And I am on "/material"
-    And print last response
+    
 
   Scenario: Material list rendering
+    And print last response
     #Given We have filled material table
     Then I should see 1 ".table2.default" element
     
