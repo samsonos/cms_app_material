@@ -14,6 +14,7 @@ use samsoncms\app\material\form\tab\Field;
 use samsonframework\core\RenderInterface;
 use samsonframework\orm\QueryInterface;
 use samsonframework\orm\Record;
+use samsonphp\event\Event;
 
 class Form extends \samsoncms\form\Form
 {
@@ -26,5 +27,8 @@ class Form extends \samsoncms\form\Form
         );
 
         parent::__construct($renderer, $query, $entity);
+
+        // Fire new event after creating form tabs
+        Event::fire('samsoncms.material.form.created', array(& $this));
     }
 }

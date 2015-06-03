@@ -1,3 +1,0 @@
-<div class="sub-tab-content" id="<?php iv('subTabID') ?>">
-    <?php iv('content') ?>
-</div>

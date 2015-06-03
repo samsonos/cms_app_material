@@ -18,7 +18,7 @@ use samsonframework\orm\Record;
 class FieldLocalized extends Generic
 {
     public $headerIndexView = 'form/tab/header/sub';
-    public $contentView = 'form/tab/field_tab/sub_content';
+    public $contentView = 'form/tab/main/sub_content';
 
     protected $id = 'sub_field_tab';
 
