@@ -37,18 +37,14 @@ class Collection extends \samsoncms\MetaCollection
     /**
      * Function to cut off related and table materials
      *
-     * @param array $materialIds Array of material identifiers
+     * @param QueryInterface $query Base entity query for modification
      */
-    public function parentIdInjection(array & $materialIds)
+    public function parentIdInjection(& $query)
     {
         // Cut off related and table materials
-        $this->query
-            ->className('material')
-            ->cond('MaterialID', $materialIds)
+        $query
             ->cond('parent_id', 0)
-            ->cond('Active', 1)
-            ->order_by('Modyfied', 'DESC')
-            ->fields('MaterialID', $materialIds);
+            ->order_by('Modyfied', 'DESC');
     }
 
     /** {@inheritdoc} */
@@ -59,7 +55,7 @@ class Collection extends \samsoncms\MetaCollection
 
         // Call external handlers
         $this->entityHandler(array($this, 'joinTables'));
-        $this->handler(array($this, 'parentIdInjection'));
+        $this->baseEntityHandler(array($this, 'parentIdInjection'));
 
         // Fill default column fields for collection
         $this->fields = array(
