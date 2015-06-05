@@ -26,9 +26,6 @@ class Application extends \samsoncms\Application
     /** Application description */
     public $description = 'Материалы';
 
-    /** Collection class with specified namespace */
-    public $collectionClass = '\samsoncms\app\material\Collection';
-
     /** Identifier */
     protected $id = 'material';
 
