@@ -14,6 +14,7 @@ use samsoncms\form\tab\Generic;
 use samsonframework\core\RenderInterface;
 use samsonframework\orm\QueryInterface;
 use samsonframework\orm\Record;
+use samsonphp\event\Event;
 
 class Field extends Generic
 {
@@ -25,34 +26,40 @@ class Field extends Generic
     /** @inheritdoc */
     public function __construct(RenderInterface $renderer, QueryInterface $query, Record $entity)
     {
+        $this->show = false;
         $entity = dbQuery('\samson\cms\CMSMaterial')
             ->cond('MaterialID', $entity->id)
             ->join('structurematerial')
             ->join('structure')
             ->first();
+        
+        if (isset($entity['onetomany']) && isset($entity['onetomany']['_structure'])) {
+            $structures = $entity['onetomany']['_structure'];
+            $nonLocalizedFieldsCount = dbQuery('structurefield')->join('field')->cond('StructureID', array_keys($structures))->cond('field_local', 0)->count();
+            $localizedFieldsCount = dbQuery('structurefield')->join('field')->cond('StructureID', array_keys($structures))->cond('field_local', 1)->count();
 
-        $structures = $entity['onetomany']['_structure'];
+            // If we have not localized fields
+            if ($nonLocalizedFieldsCount > 0) {
+                // Create default sub tab
+                $this->subTabs[] = new FieldLocalized($renderer, $query, $entity, '');
+                $this->show = true;
+            }
 
-        $nonLocalizedFieldsCount = dbQuery('structurefield')->join('field')->cond('StructureID', array_keys($structures))->cond('field_local', 0)->count();
-        $localizedFieldsCount = dbQuery('structurefield')->join('field')->cond('StructureID', array_keys($structures))->cond('field_local', 1)->count();
-
-        // If we have not localized fields
-        if ($nonLocalizedFieldsCount > 0) {
-            // Create default sub tab
-            $this->subTabs[] = new FieldLocalized($renderer, $query, $entity, '');
-        }
-
-        // Iterate available locales if we have localized fields
-        if (sizeof(SamsonLocale::$locales) && $localizedFieldsCount > 0) {
-            foreach (SamsonLocale::$locales as $locale) {
-                // Create child tab
-                $subTab = new FieldLocalized($renderer, $query, $entity, $locale);
-                $this->subTabs[] = $subTab;
+            // Iterate available locales if we have localized fields
+            if (sizeof(SamsonLocale::$locales) && $localizedFieldsCount > 0) {
+                foreach (SamsonLocale::$locales as $locale) {
+                    // Create child tab
+                    $subTab = new FieldLocalized($renderer, $query, $entity, $locale);
+                    $this->subTabs[] = $subTab;
+                }
+                $this->show = true;
             }
         }
 
         // Call parent constructor to define all class fields
         parent::__construct($renderer, $query, $entity);
+
+        Event::fire('samsoncms.material.fieldtab.created', array(& $this));
     }
 
     /** @inheritdoc */

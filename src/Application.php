@@ -113,6 +113,36 @@ class Application extends \samsoncms\Application
         );
     }
 
+	 public function __form($entityID = 0, $navigation = null)
+    {
+        $entity = null;
+
+        if (!dbQuery($this->entity)->id($entityID)->first($entity)) {
+            $entity = new \samson\activerecord\material(false);
+            $entity->Active = 1;
+            $entity->Created = date('Y-m-d H:m:s');
+
+            $user = m('social')->user();
+            $entity->UserID = $user->user_id;
+            $entity->save();
+
+            if (isset($navigation)) {
+                // Create relation with structure
+                $structureMaterial = new \samson\activerecord\structurematerial();
+                $structureMaterial->MaterialID = $entity->id;
+                $structureMaterial->StructureID = $navigation;
+                $structureMaterial->Active = '1';
+                $structureMaterial->save();
+            }
+            url()->redirect($this->id.'/'.'form/'.$entity->id);
+        }
+
+        $form = new $this->formClassName($this, new dbQuery($this->entity), $entity);
+        $formView = $form->render();
+
+        $this->view('form/index2')->entityId($entity->id)->formContent($formView);
+    }
+	
     /** Asynchronous controller for material save */
     public function __async_save()
     {

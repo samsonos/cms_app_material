@@ -11,7 +11,7 @@
         <?php t('Список')?>
 	</a>
 </li><li class="<?php print(url()->method == 'form' ? 'active' : '')?>">
-	<a href="<?php module_url('edit2', 0);?>">
+	<a href="<?php module_url('form', 0);?>">
 		<?php t('Новый')?>
 	</a>
 </li>

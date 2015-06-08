@@ -1,0 +1,5 @@
+<div class="sub-tab-content" id="<?php iv('subTabID') ?>" style="height: 500px; position: relative; display: block;">
+    <div class="wysiwyg-tab" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;">
+        <?php iv('content_html') ?>
+    </div>
+</div>
