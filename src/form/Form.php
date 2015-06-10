@@ -19,6 +19,8 @@ use samsonphp\event\Event;
 
 class Form extends \samsoncms\form\Form
 {
+    public $structureIds = array();
+
     /** @inheritdoc */
     public function __construct(RenderInterface $renderer, QueryInterface $query, Record $entity)
     {
@@ -27,12 +29,16 @@ class Form extends \samsoncms\form\Form
             new Field($renderer, $query, $entity)
         );
 
-        $structures = dbQuery('structurematerial')->cond('MaterialID', $entity->id)->fields('StructureID');
+        $this->structureIds = dbQuery('structurematerial')->cond('MaterialID', $entity->id)->fields('StructureID');
 
-        if (sizeof($structures)) {
-            $fields = dbQuery('field')->cond('Type', 8)->join('structurefield')->cond('structurefield_StructureID', $structures)->exec();
+        if (sizeof($this->structureIds)) {
+            $wysiwygFields = dbQuery('field')
+                ->cond('Type', 8)
+                ->join('structurefield')
+                ->cond('structurefield_StructureID', $this->structureIds)
+                ->exec();
 
-            foreach ($fields as $field) {
+            foreach ($wysiwygFields as $field) {
                 $this->tabs[] = new MaterialField($renderer, $query, $entity, $field);
             }
         }
