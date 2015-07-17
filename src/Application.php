@@ -75,7 +75,7 @@ class Application extends \samsoncms\Application
     public function __async_edit2($materialId = null, $navigation = null)
     {
         // If this is form for a new material with structure relation
-        if ($materialId === 0 && isset($navigation)) {
+        if ($materialId == 0 && isset($navigation)) {
             // Create new material db record
             $material = db()->entity('\samson\cms\CMSMaterial');
             $material->Active = 1;
