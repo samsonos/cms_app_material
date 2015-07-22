@@ -28,35 +28,26 @@ class Main extends \samsoncms\form\tab\Entity
     /** @var \samsonframework\orm\Record[] Collection of additional material entity fields */
     protected $materialFields = array();
 
-    /** @inheritdoc */
-    public function __construct(RenderInterface $renderer, QueryInterface $query, Record $entity)
+    public function loadAdditionalFields($entityID, & $formFields = array(), & $materialFields = array())
     {
-        // Add generic material entity fields
-        $this->fields = array(
-            new Generic('Name', t('Название', true), 0),
-            new Generic('Url', t('Url', true), 0),
-            new Generic('Published', t('Активен', true), 11),
-        );
-
         /** @var \samsonframework\orm\Record[] $structureIDs Get material entity navigation identifiers */
         $structureIDs = array();
-        if ($query->className('structurematerial')
-            ->cond('MaterialID', $entity->id)
+        if ($this->query->className('structurematerial')
+            ->cond('MaterialID', $entityID)
             ->cond('Active', 1)
             ->fields('StructureID', $structureIDs)) {
 
             /** @var \samsonframework\orm\Record[] $structureFields Get structure-fields records for this entity with fields data */
             $structureFields = array();
-            if($query->className('structurefield')
+            if($this->query->className('structurefield')
                 ->cond('field_Type', array('9', '8'), Relation::NOT_EQUAL)// Exclude WYSIWYG & gallery
-                ->cond('field_local', 0)// Not localized
+                //->cond('field_local', 0)// Not localized
                 ->cond('Active', 1)// Not deleted
                 ->cond('StructureID', $structureIDs)
                 ->join('field')
                 ->group_by('field_FieldID')
                 ->order_by('FieldID', 'ASC')
                 ->exec($structureFields)) {
-
 
                 /** @var array $fieldIDs Collection of field identifiers */
                 $fieldIDs = array();
@@ -68,7 +59,7 @@ class Main extends \samsoncms\form\tab\Entity
                     $field = & $structureField->onetoone['_field'];
                     if (isset($field)) {
                         // Create input field grouped by field identifier
-                        $this->additionalFields[$structureField->FieldID] = new Generic(
+                        $formFields[$structureField->FieldID] = new Generic(
                             $field->Name,
                             isset($field->Description{0}) ? $field->Description : $field->Name,
                             $field->Type
@@ -77,15 +68,27 @@ class Main extends \samsoncms\form\tab\Entity
                 }
 
                 // Get all material-fields objects for rendering input fields grouped by field identifier
-                foreach($query->className('materialfield')->cond('FieldID', $fieldIDs)->cond('MaterialID', $entity->id)->exec() as $mf){
-                    $this->materialFields[$mf->FieldID] = $mf;
+                foreach($this->query->className('materialfield')->cond('FieldID', $fieldIDs)->cond('MaterialID', $entityID)->exec() as $mf){
+                    $materialFields[$mf->FieldID] = $mf;
                 }
             }
         }
+    }
 
+    /** @inheritdoc */
+    public function __construct(RenderInterface $renderer, QueryInterface $query, Record $entity)
+    {
+        // Add generic material entity fields
+        $this->fields = array(
+            new Generic('Name', t('Название', true), 0),
+            new Generic('Url', t('Url', true), 0),
+            new Generic('Published', t('Активен', true), 11),
+        );
 
         // Call parent constructor to define all class fields
         parent::__construct($renderer, $query, $entity);
+
+        $this->loadAdditionalFields($entity->id);
     }
 
     /** @inheritdoc */
@@ -100,6 +103,7 @@ class Main extends \samsoncms\form\tab\Entity
             $view .= $field->render($this->renderer, $this->query, $this->entity).'</div>';
         }
 
+        // Iterate material entity additional not localized fields
         foreach ($this->additionalFields as $fieldID => $additionalField) {
             // Render field header
             $view .= '<div class="template-form-input-group">'.$additionalField->renderHeader($this->renderer);
