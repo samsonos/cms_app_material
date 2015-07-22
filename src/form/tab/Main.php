@@ -5,17 +5,22 @@
  * Date: 27.05.2015
  * Time: 13:07
  */
-
 namespace samsoncms\app\material\form\tab;
-
 
 use samsoncms\form\field\Generic;
 use samsonframework\core\RenderInterface;
 use samsonframework\orm\QueryInterface;
 use samsonframework\orm\Record;
 
-class Entity extends \samsoncms\form\tab\Entity
+/**
+ * Main material form tab
+ * @package samsoncms\app\material\form\tab
+ */
+class Main extends \samsoncms\form\tab\Entity
 {
+    /** @var string Tab header */
+    public $name = 'Главная';
+
     /** @inheritdoc */
     public function __construct(RenderInterface $renderer, QueryInterface $query, Record $entity)
     {
