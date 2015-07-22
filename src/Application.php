@@ -113,11 +113,11 @@ class Application extends \samsoncms\Application
         );
     }
 
-	 public function __form($entityID = 0, $navigation = null)
+	 public function __form($identifier = 0, $navigation = null)
     {
         $entity = null;
 
-        if (!dbQuery($this->entity)->id($entityID)->first($entity)) {
+        if (!dbQuery($this->entity)->id($identifier)->first($entity)) {
             $entity = new \samson\activerecord\material(false);
             $entity->Active = 1;
             $entity->Created = date('Y-m-d H:m:s');
@@ -140,7 +140,10 @@ class Application extends \samsoncms\Application
         $form = new $this->formClassName($this, new dbQuery($this->entity), $entity);
         $formView = $form->render();
 
-        $this->view('form/index2')->entityId($entity->id)->formContent($formView);
+        $this->view('form/index2')
+            ->title($this->description)
+            ->entityId($entity->id)
+            ->formContent($formView);
     }
 	
     /** Asynchronous controller for material save */
