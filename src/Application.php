@@ -35,8 +35,6 @@ class Application extends \samsoncms\Application
     /** @var string Generic material entity form class */
     protected $formClassName = '\samsoncms\app\material\form\Form';
 
-    /** Controllers */
-
     /**
      * Universal controller action.Entity collection rendering.
      *
@@ -90,11 +88,14 @@ class Application extends \samsoncms\Application
 
         // If we have successfully completed asynchronous action
         if ($response['status']) {
-            return $this->view('form/index2')
+            $this->view('form/index2')
                 ->set($response['entity'], 'entity')    // Pass entity object to view
                 ->set('formContent', $response['form']) // Pass rendered form to view
-                ->title($this->description)
                 ;
+
+            m('local')->title(t('Редактирование', true).' #'.$identifier.' - '.$this->description);
+
+            return true;
         }
 
         // Controller action have failed
