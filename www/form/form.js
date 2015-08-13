@@ -57,7 +57,7 @@ var saveMain = function( redirect )
 		// Parse JSON response
         response = JSON.parse( response );
 		// Redirect
-		if( redirect == true ) window.location.href = (response.url !== undefined) ? response.url : s('#appName').val() + '/edit2/' + s('#MaterialID').val();
+		if( redirect == true ) window.location.href = (response.url !== undefined) ? response.url : s('#appName').val() + '/form/' + s('#MaterialID').val();
 		// Rerender form
 		else
 		{			
