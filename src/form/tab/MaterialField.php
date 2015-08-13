@@ -27,7 +27,7 @@ class MaterialField extends Generic
     /** @inheritdoc */
     public function __construct(RenderInterface $renderer, QueryInterface $query, Record $entity, \samson\activerecord\field $field)
     {
-        $this->name = $field->Name;
+        $this->name = $field->Description != '' ? $field->Description : $field->Name;
 
         // Prepare locales array with one default locale by default
         $locales = array('');
