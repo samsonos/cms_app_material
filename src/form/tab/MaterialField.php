@@ -28,6 +28,7 @@ class MaterialField extends Generic
     public function __construct(RenderInterface $renderer, QueryInterface $query, Record $entity, \samson\activerecord\field $field)
     {
         $this->name = $field->Description != '' ? $field->Description : $field->Name;
+        $this->id .= '_'.$field->Name;
 
         // Prepare locales array with one default locale by default
         $locales = array('');
@@ -56,7 +57,6 @@ class MaterialField extends Generic
                     $materialField->locale = $locale;
                     $materialField->save();
                 }
-
                 // Add child tab
                 $this->subTabs[] = new MaterialFieldLocalized($renderer, $query, $entity, $materialField, $locale);
             }

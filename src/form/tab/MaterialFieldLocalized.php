@@ -47,6 +47,7 @@ class MaterialFieldLocalized extends Generic
 
         // Generate unique html identifier
         $this->id = $this->id.'_'.$this->name;
+        $this->id .= $materialField->id;
 
         // Call parent constructor to define all class fields
         parent::__construct($renderer, $query, $entity);
