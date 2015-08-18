@@ -5,9 +5,7 @@
  * Date: 27.05.2015
  * Time: 15:06
  */
-
 namespace samsoncms\app\material\form\tab;
-
 
 use samson\core\SamsonLocale;
 use samsoncms\form\tab\Generic;
@@ -59,18 +57,20 @@ class Field extends Generic
         // Call parent constructor to define all class fields
         parent::__construct($renderer, $query, $entity);
 
+        // Trigger special additional field
         Event::fire('samsoncms.material.fieldtab.created', array(& $this));
     }
 
     /** @inheritdoc */
     public function content()
     {
+        // Render all sub-tabs contents
         $content = '';
-
         foreach ($this->subTabs as $subTab) {
             $content .= $subTab->content();
         }
 
+        // Render tab main content
         return $this->renderer->view($this->contentView)->content($content)->output();
     }
 }
