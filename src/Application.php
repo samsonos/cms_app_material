@@ -35,6 +35,30 @@ class Application extends \samsoncms\Application
     /** @var string Generic material entity form class */
     protected $formClassName = '\samsoncms\app\material\form\Form';
 
+    /** Module initialization */
+    public function init(array $params = array())
+    {
+        // Subscribe to input change event
+        \samsonphp\event\Event::subscribe('samson.cms.input.change', array($this, 'inputUpdateHandler'));
+    }
+
+    /**
+     * Input field saving handler
+     * @param \samsonframework\orm\Record $object
+     * @param string $param Field
+     * @param string $previousValue Previous object field value
+     * @param string $response Response
+     */
+    public function inputUpdateHandler(& $object, $param, $previousValue, $response = null)
+    {
+        // If current object is material and we change parameter Name, then change objects Url too if it is empty
+        if ($object instanceof \samson\activerecord\material) {
+            if ($param == 'Name' && $object->Url == '') {
+                $object->Url = utf8_translit($object->Name);
+            }
+        }
+    }
+    
     /**
      * Universal controller action.Entity collection rendering.
      *
