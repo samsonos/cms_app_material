@@ -22,6 +22,9 @@ class Main extends \samsoncms\form\tab\Entity
     /** @var string Tab header */
     public $name = 'Главная';
 
+    /** @var string Default path to content view */
+    public $contentView = 'form/tab/main/materialContent';
+
     /** @var \samsoncms\form\field\Generic[] Collection of additional form fields */
     protected $additionalFields = array();
 
@@ -111,7 +114,28 @@ class Main extends \samsoncms\form\tab\Entity
             $view .= $additionalField->render($this->renderer, $this->query, $this->materialFields[$fieldID]).'</div>';
         }
 
+        $structureIDs = dbQuery('structurematerial')
+            ->cond('MaterialID', $this->entity->id)
+            ->cond('Active', 1)
+            ->fields('StructureID');
+
+        // Iterate all loaded CMSNavs
+        $parentSelect = '';
+
+        $navs = dbQuery('structure')->exec();
+
+        foreach ($navs as $db_structure) {
+            // If material is related to current CMSNav
+            $selected = '';
+            if (in_array($db_structure->id, $structureIDs)) {
+                $selected = 'selected';
+            }
+            // Generate CMSNav option
+            $parentSelect .= '<option ' . $selected . ' value="' .
+                $db_structure->id . '">' . $db_structure->Name . '</option>';
+        }
+
         // Render tab content
-        return $this->renderer->view($this->contentView)->content($view)->output();
+        return $this->renderer->view($this->contentView)->parentSelect($parentSelect)->content($view)->matId($this->entity->id)->output();
     }
 }

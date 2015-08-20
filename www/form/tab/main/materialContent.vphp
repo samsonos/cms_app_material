@@ -1,0 +1,7 @@
+<div class="template-form">
+    <?php iv('content') ?>
+
+    <select multiple class="material-structure-selectify" data-href-add="<?php module_url('addnav', 'matId') ?>" data-href-remove="<?php module_url('removenav', 'matId') ?>">
+        <?php iv('parentSelect') ?>
+    </select>
+</div>
