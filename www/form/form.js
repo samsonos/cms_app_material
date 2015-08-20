@@ -5,25 +5,25 @@ s('.material-structure-selectify').pageInit(function(select) {
 
     initLinks(select.prev());
 
-    s('._sjsselect ._sjsselect_delete', select.prev()).each(function(link) {
-        link.click(function(link) {
-            if (!link.hasClass('selectify-loaded')) {
-                s.ajax(select.a('data-href-remove') + '/' + link.a('value'), function(response) {
 
+    s('._sjsselect_dropdown li', select.prev()).each(function(li) {
+        if (!li.hasClass('selectify-loaded')) {
+            li.click(function(li) {
+                s.ajax(select.a('data-href-add') + '/' + li.a('value'), function(response) {
+                    initLinks(select.prev());
                 });
-                link.addClass('selectify-loaded');
-            }
-        });
+                li.addClass('selectify-loaded');
+            });
+        }
     });
 
     function initLinks(block) {
-        s('._sjsselect_dropdown li', block).each(function(li) {
-            if (!li.hasClass('selectify-loaded')) {
-                li.click(function(li) {
-                    s.ajax(select.a('data-href-add') + '/' + li.a('value'), function(response) {
-
+        s('._sjsselect ._sjsselect_delete', block).each(function(link) {
+            if (!link.hasClass('selectify-loaded')) {
+                link.click(function(link) {
+                    s.ajax(select.a('data-href-remove') + '/' + link.a('value'), function(response) {
                     });
-                    li.addClass('selectify-loaded');
+                    link.addClass('selectify-loaded');
                 });
             }
         });
