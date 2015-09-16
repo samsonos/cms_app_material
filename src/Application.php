@@ -104,6 +104,30 @@ class Application extends \samsoncms\Application
         url()->redirect($this->id . '/form/' . $entity->id);
     }
 
+    /**
+     * Delete structure from entity
+     * @param int $navigation Parent navigation identifier
+     */
+    public function __removenav($materialId = null, $navigation = null)
+    {
+        $structureMaterials = dbQuery('structurematerial')->cond('MaterialID', $materialId)->cond('StructureID', $navigation)->first();
+        $structureMaterials->delete();
+    }
+
+    /**
+     * Add new structure to entity
+     * @param int $navigation Parent navigation identifier
+     */
+    public function __addnav($materialId = null, $navigation = null)
+    {
+        // Save record
+        $sm = new CMSNavMaterial(false);
+        $sm->MaterialID = $materialId;
+        $sm->StructureID = $navigation;
+        $sm->Active = '1';
+        $sm->save();
+    }
+
     /** @inheritdoc */
     public function __form($identifier)
     {
