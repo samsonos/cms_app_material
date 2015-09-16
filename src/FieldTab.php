@@ -30,6 +30,7 @@ class FieldTab extends FormTab
 	 */
 	public function __construct( Form & $form, FormTab & $parent = null, $locale = null )
 	{
+
 		// Call parent constructor
 		parent::__construct( $form, $parent );	
 		
@@ -46,6 +47,8 @@ class FieldTab extends FormTab
 		if ( ! isset( $material->onetomany['_structure'] )) $this->render = false;
 		else 
 		{
+
+
 			// Create FormFieldTable instance
 			$this->field_table = new FormFieldTable( $form->material, $form, $locale );	
 			

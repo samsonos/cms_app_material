@@ -30,6 +30,12 @@ class MaterialField extends Generic
         $this->name = $field->Description != '' ? $field->Description : $field->Name;
         $this->id .= '_'.$field->Name;
 
+
+
+
+
+
+
         // Prepare locales array with one default locale by default
         $locales = array('');
 

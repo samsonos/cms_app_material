@@ -17,7 +17,7 @@ use samsonphp\event\Event;
 class Field extends Generic
 {
     /** @var string Tab name or identifier */
-    protected $name = 'Field Tab';
+    protected $name = 'Дополнительные поля';
 
     protected $id = 'field_tab';
 
@@ -37,15 +37,17 @@ class Field extends Generic
             $localizedFieldsCount = dbQuery('structurefield')->join('field')->cond('StructureID', array_keys($structures))->cond('field_local', 1)->count();
 
             // If we have not localized fields
-            if ($nonLocalizedFieldsCount > 0) {
+            // Don't display the non localized fields
+            /*if ($nonLocalizedFieldsCount > 0) {
                 // Create default sub tab
                 $this->subTabs[] = new FieldLocalized($renderer, $query, $entity, '');
                 $this->show = true;
-            }
+            }*/
 
             // Iterate available locales if we have localized fields
             if (sizeof(SamsonLocale::$locales) && $localizedFieldsCount > 0) {
                 foreach (SamsonLocale::$locales as $locale) {
+
                     // Create child tab
                     $subTab = new FieldLocalized($renderer, $query, $entity, $locale);
                     $this->subTabs[] = $subTab;

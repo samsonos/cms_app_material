@@ -33,6 +33,9 @@ class Main extends \samsoncms\form\tab\Entity
 
     public function loadAdditionalFields($entityID, & $formFields = array(), & $materialFields = array())
     {
+
+        $this->addFieldToTab($entityID);
+
         /** @var \samsonframework\orm\Record[] $structureIDs Get material entity navigation identifiers */
         $structureIDs = array();
         if ($this->query->className('structurematerial')
@@ -72,7 +75,7 @@ class Main extends \samsoncms\form\tab\Entity
 
                 // Get all material-fields objects for rendering input fields grouped by field identifier
                 foreach($this->query->className('materialfield')->cond('FieldID', $fieldIDs)->cond('MaterialID', $entityID)->exec() as $mf){
-                    $materialFields[$mf->FieldID] = $mf;
+                    $this->materialFields[$mf->FieldID] = $mf;
                 }
             }
         }
@@ -88,10 +91,60 @@ class Main extends \samsoncms\form\tab\Entity
             new Generic('Published', t('Активен', true), 11),
         );
 
+        $this->addFieldToTab($entity->id);
+
         // Call parent constructor to define all class fields
         parent::__construct($renderer, $query, $entity);
 
-        $this->loadAdditionalFields($entity->id);
+        //$this->loadAdditionalFields($entity->id);
+    }
+
+    public function addFieldToTab($entityId){
+
+        $entity = dbQuery('\samson\cms\CMSMaterial')
+            ->cond('MaterialID', $entityId)
+            ->join('structurematerial')
+            ->join('structure')
+            ->first();
+
+        if (isset($entity['onetomany']) && isset($entity['onetomany']['_structure'])) {
+            $structures = $entity['onetomany']['_structure'];
+            $structuresId = array();
+            foreach ($structures as $structure) {
+                if ($structure->type == 0) {
+                    $structuresId[] = $structure->StructureID;
+                    break;
+                }
+            }
+            $nonLocalizedFields = dbQuery('structurefield')->join('field')->cond('StructureID', $structuresId)->cond('field_local', 0);
+            $nonLocalizedFieldsCount = $nonLocalizedFields->count();
+
+            // If we have not localized fields
+            if ($nonLocalizedFieldsCount > 0) {
+
+                foreach ($nonLocalizedFields->exec() as $filed) {
+                    if (isset($filed['onetoone']['_field'])) {
+
+                        $filedFull = $filed['onetoone']['_field'];
+                        if (!empty($filedFull)) {
+
+                            if ($filedFull->Type == 5 || $filedFull->Type == 9) {
+                                continue;
+                            }
+                            if ($filedFull->Type == 4){
+                                trace($filedFull, 1);
+                            }
+
+                            // Get field type
+                            $this->additionalFields[] = new Generic($filedFull->Name, t($filedFull->Description, true), $filedFull->Type);
+
+                            // Get materialfield for getting their data
+                            $this->materialFields[] = dbQuery('materialfield')->cond('MaterialID', $entityId)->cond('FieldID', $filedFull->id)->cond('locale', 0)->first();
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /** @inheritdoc */
@@ -135,7 +188,9 @@ class Main extends \samsoncms\form\tab\Entity
                 $db_structure->id . '">' . $db_structure->Name . '</option>';
         }
 
+        $nameSelectStructureField = t('Теги структуры',true);
+
         // Render tab content
-        return $this->renderer->view($this->contentView)->parentSelect($parentSelect)->content($view)->matId($this->entity->id)->output();
+        return $this->renderer->view($this->contentView)->nameSelectStructureField($nameSelectStructureField)->parentSelect($parentSelect)->content($view)->matId($this->entity->id)->output();
     }
 }

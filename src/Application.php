@@ -212,8 +212,6 @@ class Application extends \samsoncms\Application
             // Build form for entity
             $form = new $this->formClassName($this, $this->query->className($this->entity), $entity);
             //elapsed('rendering form');
-            //trace($this->formClassName, true);
-
             // Render form
             $result['form'] = $form->render();
             $result['entity'] = $entity;
