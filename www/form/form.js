@@ -28,4 +28,17 @@ s('.material-structure-selectify').pageInit(function(select) {
             }
         });
     }
+
+    // List with handle
+    var elements = document.getElementsByClassName('table2-body');
+    for (var element in elements) {
+        Sortable.create(elements[element], {
+            animation: 150,
+            onEnd: function(e){
+                var oldIndex = e.oldIndex;
+                var newIndex = e.newIndex;
+                console.log(oldIndex, newIndex, e);
+            }
+        });
+    }
 });

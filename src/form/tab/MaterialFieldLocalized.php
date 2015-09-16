@@ -39,8 +39,11 @@ class MaterialFieldLocalized extends Generic
      */
     public function __construct(RenderInterface $renderer, QueryInterface $query, Record $entity, CMSMaterialField $materialField, $locale = '')
     {
+        // Get type of filed
+        $field = dbQuery('field')->cond('FieldID', $materialField->FieldID)->first();
+
         // Create CMS Field object from CMSMaterialField object
-        $this->inputField = m('samsoncms_input_application')->createFieldByType(new dbQuery(), 8, $materialField);
+        $this->inputField = m('samsoncms_input_application')->createFieldByType(new dbQuery(), $field->Type, $materialField);
 
         // Save tab header name as locale name
         $this->name = $locale;
