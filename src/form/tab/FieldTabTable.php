@@ -122,16 +122,44 @@ class FieldTabTable extends \samson\cms\table\Table
         if (!isset($db_field)) return e('StructureField# ## - Field not found(##)', E_SAMSON_CMS_ERROR, array($db_row->id, $db_row->FieldID));
 
         // Try to get already created materialfield object by field id
-        if (isset($this->materialfields[$db_row->FieldID])) $db_mf = &$this->materialfields[$db_row->FieldID];
+        if (isset($this->materialfields[$db_row->FieldID])) {
+            //trace($this->materialfields[$db_row->FieldID], 1);
+            $db_mf = &$this->materialfields[$db_row->FieldID];
+        }
         // Otherwise create new material field object
         else {
-            //trace('New field for'.$db_field->id);
-            $db_mf = new \samson\activerecord\materialfield(false);
-            $db_mf->locale = $this->locale;
-            $db_mf->Active = 1;
-            $db_mf->MaterialID = $this->db_material->id;
-            $db_mf->FieldID = $db_field->id;
-            $db_mf->save();
+
+            //trace($this->materialfields[$db_row->FieldID], 1);
+
+            //trace('New field for'.$db_field->id, 1);
+
+            $mat = null;
+            // Updatedbyme
+            if (
+                $db_field->local == 0 &&
+                dbQuery('materialfield')
+                    ->cond('FieldID', $db_field->id)
+                    ->cond('MaterialID', $this->db_material->id)
+                    ->cond('locale', 0)
+                    ->first($mat)
+            ) {
+                //trace($mat, 1);die;
+                    $db_mf = $mat;
+            } else {
+
+                $db_mf = new \samson\activerecord\materialfield(false);
+
+                if ($db_field->local == 1) {
+                    $db_mf->locale = $this->locale;
+                } else {
+                    $db_mf->locale = 0;
+                }
+
+                $db_mf->Active = 1;
+                $db_mf->MaterialID = $this->db_material->id;
+                $db_mf->FieldID = $db_field->id;
+                $db_mf->save();
+            }
         }
 
         // Create input element for field

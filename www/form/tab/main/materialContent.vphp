@@ -1,7 +1,15 @@
 <div class="template-form">
+
     <?php iv('content') ?>
 
-    <select multiple class="material-structure-selectify" data-href-add="<?php module_url('addnav', 'matId') ?>" data-href-remove="<?php module_url('removenav', 'matId') ?>">
-        <?php iv('parentSelect') ?>
-    </select>
+    <div class="template-form-input-group select-structure-wrapper">
+        <div class="form-field-title select-structure-title">
+            <span>
+                <?php iv('nameSelectStructureField') ?>
+            </span>
+        </div>
+        <select multiple class="material-structure-selectify" data-href-add="<?php module_url('addnav', 'matId') ?>" data-href-remove="<?php module_url('removenav', 'matId') ?>">
+            <?php iv('parentSelect') ?>
+        </select>
+    </div>
 </div>

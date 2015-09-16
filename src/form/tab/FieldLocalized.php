@@ -46,6 +46,8 @@ class FieldLocalized extends Generic
     {
         $table = new FieldTabTable($this->entity, $this->entity['onetomany']['_structure'], $this->locale);
 
+        //trace($table->render(null, $this->renderer), 1);
+
         return $this->renderer->view($this->contentView)
             ->content($table->render(null, $this->renderer))
             ->subTabID($this->id)
