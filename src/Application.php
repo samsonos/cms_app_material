@@ -136,12 +136,13 @@ class Application extends \samsoncms\Application
 
         // If we have successfully completed asynchronous action
         if ($response['status']) {
-            $this->view('form/index2')
+
+            // Set title and another params
+            $this->title(t('Редактирование', true).' #'.$identifier.' - '.$this->description)
+                ->view('form/index2')
                 ->set($response['entity'], 'entity')    // Pass entity object to view
                 ->set('formContent', $response['form']) // Pass rendered form to view
                 ;
-
-            m('local')->title(t('Редактирование', true).' #'.$identifier.' - '.$this->description);
 
             return true;
         }

@@ -7,6 +7,7 @@
  */
 namespace samsoncms\app\material\form\tab;
 
+use samson\activerecord\dbRelation;
 use samson\core\SamsonLocale;
 use samsoncms\form\tab\Generic;
 use samsonframework\core\RenderInterface;
@@ -34,7 +35,17 @@ class Field extends Generic
         if (isset($entity['onetomany']) && isset($entity['onetomany']['_structure'])) {
             $structures = $entity['onetomany']['_structure'];
             $nonLocalizedFieldsCount = dbQuery('structurefield')->join('field')->cond('StructureID', array_keys($structures))->cond('field_local', 0)->count();
-            $localizedFieldsCount = dbQuery('structurefield')->join('field')->cond('StructureID', array_keys($structures))->cond('field_local', 1)->count();
+
+            $newStructuresId = array();
+            // Get all structure which not table
+            foreach ($structures as $structure) {
+                if ($structure->type == 0) {
+                    $newStructuresId[] = $structure->id;
+                }
+            }
+
+            $localizedFieldsCount =  dbQuery('structurefield')->join('field')->cond('StructureID', $newStructuresId)->cond('field_local', 1)->cond('field_Type', 5, dbRelation::LOWER)->count();
+
 
             // If we have not localized fields
             // Don't display the non localized fields
@@ -49,7 +60,7 @@ class Field extends Generic
                 foreach (SamsonLocale::$locales as $locale) {
 
                     // Create child tab
-                    $subTab = new FieldLocalized($renderer, $query, $entity, $locale);
+                    $subTab = new LocaleTab($renderer, $query, $entity, $locale);
                     $this->subTabs[] = $subTab;
                 }
                 $this->show = true;
