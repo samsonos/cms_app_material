@@ -7,11 +7,13 @@
  */
 namespace samsoncms\app\material\form\tab;
 
+use samson\activerecord\materialfield;
 use samsoncms\form\field\Generic;
 use samsonframework\core\RenderInterface;
 use samsonframework\orm\QueryInterface;
 use samsonframework\orm\Record;
 use samsonframework\orm\Relation;
+use samson\core\SamsonLocale;
 
 /**
  * Main material form tab
@@ -31,11 +33,13 @@ class Main extends \samsoncms\form\tab\Entity
     /** @var \samsonframework\orm\Record[] Collection of additional material entity fields */
     protected $materialFields = array();
 
-    public function loadAdditionalFields($entityID, & $formFields = array(), & $materialFields = array())
+    /**
+     * Store all additional fields in the material
+     * @param $entityID
+     * @param int $locale Load locale fields or not
+     */
+    public function loadAdditionalFields($entityID, $locale = 0)
     {
-
-        $this->addFieldToTab($entityID);
-
         /** @var \samsonframework\orm\Record[] $structureIDs Get material entity navigation identifiers */
         $structureIDs = array();
         if ($this->query->className('structurematerial')
@@ -46,8 +50,8 @@ class Main extends \samsoncms\form\tab\Entity
             /** @var \samsonframework\orm\Record[] $structureFields Get structure-fields records for this entity with fields data */
             $structureFields = array();
             if($this->query->className('structurefield')
-                ->cond('field_Type', array('9', '8'), Relation::NOT_EQUAL)// Exclude WYSIWYG & gallery
-                //->cond('field_local', 0)// Not localized
+                ->cond('field_Type', array('9', '8', '5'), Relation::NOT_EQUAL)// Exclude WYSIWYG & gallery
+                ->cond('field_local', $locale)// Not localized
                 ->cond('Active', 1)// Not deleted
                 ->cond('StructureID', $structureIDs)
                 ->join('field')
@@ -58,24 +62,88 @@ class Main extends \samsoncms\form\tab\Entity
                 /** @var array $fieldIDs Collection of field identifiers */
                 $fieldIDs = array();
                 foreach ($structureFields as $structureField) {
+
                     // Gather used field identifiers
                     $fieldIDs[] = $structureField->FieldID;
 
                     // If additional field is found
                     $field = & $structureField->onetoone['_field'];
                     if (isset($field)) {
-                        // Create input field grouped by field identifier
-                        $formFields[$structureField->FieldID] = new Generic(
-                            $field->Name,
-                            isset($field->Description{0}) ? $field->Description : $field->Name,
-                            $field->Type
-                        );
-                    }
-                }
 
-                // Get all material-fields objects for rendering input fields grouped by field identifier
-                foreach($this->query->className('materialfield')->cond('FieldID', $fieldIDs)->cond('MaterialID', $entityID)->exec() as $mf){
-                    $this->materialFields[$mf->FieldID] = $mf;
+
+                        // If need get not localized fields
+                        if ($locale == 0) {
+
+                            // Get values of fields
+                            $mf = null;
+                            if ($this->query->className('materialfield')->cond('FieldID', $field->id)->cond('MaterialID', $entityID)->first($mf)) {
+
+                                // Create input field grouped by field identifier
+                                $this->additionalFields[] = new Generic(
+                                    $field->Name,
+                                    isset($field->Description{0}) ? $field->Description : $field->Name,
+                                    $field->Type
+                                );
+
+                                // Save mf
+                                $this->materialFields[] = $mf;
+                            }
+
+                            // It is localized fields
+                        } else {
+
+                            // Get current locales
+                            $locales = SamsonLocale::$locales;
+                            $mf = null;
+                            if (sizeof(SamsonLocale::$locales)){
+
+                                // Init arrays
+                                $localeGeneric = array();
+                                $localeData = array();
+
+                                // Iterate locale and save their generic and data
+                                foreach ($locales as $local) {
+
+                                    // If there no materialfield item then create it
+                                    if (
+                                        !$this->query->className('materialfield')
+                                            ->cond('FieldID', $field->id)
+                                            ->cond('MaterialID', $entityID)
+                                            ->cond('Active', 1)
+                                            ->cond('locale', $local)
+                                            ->first($mf)
+                                    ) {
+
+                                        trace('create new item', 1);
+
+                                        // Create new materialfield
+                                        $mf = new \samson\activerecord\materialfield(false);
+
+                                        $mf->locale = $local;
+                                        $mf->Active = 1;
+                                        $mf->MaterialID = $entityID;
+                                        $mf->FieldID = $field->id;
+                                        $mf->save();
+
+                                    }
+
+                                    // Create generic for this field
+                                    $localeGeneric[$local] = new Generic(
+                                        $field->Name,
+                                        isset($field->Description{0}) ? $field->Description : $field->Name,
+                                        $field->Type
+                                    );
+
+                                    // Save mf
+                                    $localeData[$local] = $mf;
+                                }
+
+                                // Save all localized data
+                                $this->additionalFields[] = $localeGeneric;
+                                $this->materialFields[] = $localeData;
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -91,65 +159,16 @@ class Main extends \samsoncms\form\tab\Entity
             new Generic('Published', t('Активен', true), 11),
         );
 
-        $this->addFieldToTab($entity->id);
-
         // Call parent constructor to define all class fields
         parent::__construct($renderer, $query, $entity);
-
-        //$this->loadAdditionalFields($entity->id);
-    }
-
-    public function addFieldToTab($entityId){
-
-        $entity = dbQuery('\samson\cms\CMSMaterial')
-            ->cond('MaterialID', $entityId)
-            ->join('structurematerial')
-            ->join('structure')
-            ->first();
-
-        if (isset($entity['onetomany']) && isset($entity['onetomany']['_structure'])) {
-            $structures = $entity['onetomany']['_structure'];
-            $structuresId = array();
-            foreach ($structures as $structure) {
-                if ($structure->type == 0) {
-                    $structuresId[] = $structure->StructureID;
-                    break;
-                }
-            }
-            $nonLocalizedFields = dbQuery('structurefield')->join('field')->cond('StructureID', $structuresId)->cond('field_local', 0);
-            $nonLocalizedFieldsCount = $nonLocalizedFields->count();
-
-            // If we have not localized fields
-            if ($nonLocalizedFieldsCount > 0) {
-
-                foreach ($nonLocalizedFields->exec() as $filed) {
-                    if (isset($filed['onetoone']['_field'])) {
-
-                        $filedFull = $filed['onetoone']['_field'];
-                        if (!empty($filedFull)) {
-
-                            if ($filedFull->Type == 5 || $filedFull->Type == 9) {
-                                continue;
-                            }
-                            if ($filedFull->Type == 4){
-                                trace($filedFull, 1);
-                            }
-
-                            // Get field type
-                            $this->additionalFields[] = new Generic($filedFull->Name, t($filedFull->Description, true), $filedFull->Type);
-
-                            // Get materialfield for getting their data
-                            $this->materialFields[] = dbQuery('materialfield')->cond('MaterialID', $entityId)->cond('FieldID', $filedFull->id)->cond('locale', 0)->first();
-                        }
-                    }
-                }
-            }
-        }
     }
 
     /** @inheritdoc */
     public function content()
     {
+        // Load additional fields
+        $this->loadAdditionalFields($this->entity->id);
+
         // Iterate all entity fields
         $view = '';
         foreach ($this->fields as $field) {
@@ -177,6 +196,7 @@ class Main extends \samsoncms\form\tab\Entity
 
         $navs = dbQuery('structure')->exec();
 
+        // Iterate all structures of this material
         foreach ($navs as $db_structure) {
             // If material is related to current CMSNav
             $selected = '';

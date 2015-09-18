@@ -136,12 +136,13 @@ class Application extends \samsoncms\Application
 
         // If we have successfully completed asynchronous action
         if ($response['status']) {
-            $this->view('form/index2')
+
+            // Set title and another params
+            $this->title(t('Редактирование', true).' #'.$identifier.' - '.$this->description)
+                ->view('form/index2')
                 ->set($response['entity'], 'entity')    // Pass entity object to view
                 ->set('formContent', $response['form']) // Pass rendered form to view
                 ;
-
-            m('local')->title(t('Редактирование', true).' #'.$identifier.' - '.$this->description);
 
             return true;
         }
@@ -293,6 +294,69 @@ class Application extends \samsoncms\Application
 
         // Return asynchronous result
         return $result;
+    }
+
+    /**
+     * Get current materials in csv format
+     * @param Int $structureId if not set navigation id on application
+     * then use default collection with passed id of structure
+     */
+    public function __tocsv($structureId = null){
+
+        // Create pager for material collection
+        $pager = new Pager(0);
+
+        // Get collection
+        $collection = new $this->collectionClass($this, new dbQuery(), $pager);
+
+        // Set navigation
+        if (isset(static::$navigation)) {
+            $collection = $collection->navigation(static::$navigation);
+        } else {
+            $collection = $collection->navigation(array($structureId));
+        }
+        $collection->fill();
+
+        $this->tocsv($collection);
+    }
+
+    /**
+     * Controller to output csv file of all materials for structure
+     * @var $structure
+     * @var $delimiter
+     * @var $enclosure
+     */
+    public function tocsv($collection, $delimiter = ',', $enclosure = '"')
+    {
+        s()->async(true);
+
+        ini_set('memory_limit', '2048M');
+
+        // Output file from browser
+        header('Content-Description: File Transfer');
+        header('Content-Type: application/vnd.ms-excel; charset=utf-8');
+        header('Content-Disposition: attachment; filename=Export'.date('dmY').'.csv');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+        header('Pragma: public');
+
+        // Write to php temp because php natively support csv files creation
+        $handle = fopen('php://temp', 'r+');
+        //fputs($handle, chr(0xEF) . chr(0xBB) . chr(0xBF)); // UTF-8 BOM
+        foreach ($collection->toArray() as $line) {
+            fputcsv($handle, $line, ';');
+        }
+
+        // Read file from temp
+        rewind($handle);
+        $csv = '';
+        while (!feof($handle)) {
+            $csv .= fread($handle, 8192);
+        }
+        fclose($handle);
+
+        // Convert to Excel readable format
+        echo mb_convert_encoding($csv, 'Windows-1251', 'UTF-8');
     }
 
     /** Output for main page */

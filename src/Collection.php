@@ -69,4 +69,39 @@ class Collection extends \samsoncms\MetaCollection
             new Control(),
         );
     }
+    
+    /**
+     * Convert collection to string
+     * @return array
+     */
+    public function toArray(){
+
+        $result = array();
+        $counter = 0;
+
+        // If collection not empty
+        if (sizeof($this->collection)) {
+
+            // Iterate all rows
+            foreach ($this->collection as &$item) {
+
+                // Iterate all fields
+                foreach ($item as $k => $v) {
+
+                    // If field name exists in this material then store it
+                    foreach ($this->fields as $field) {
+                        if ($field->name == $k) {
+
+                            // Save item
+                            $result[$counter][$k] = $v;
+                            break;
+                        }
+                    }
+                }
+                $counter++;
+            }
+        }
+
+        return $result;
+    }
 }

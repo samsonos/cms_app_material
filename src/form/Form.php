@@ -27,6 +27,26 @@ class Form extends \samsoncms\form\Form
     /** @inheritdoc */
     public function __construct(RenderInterface $renderer, QueryInterface $query, Record $entity)
     {
+        // Get all locales
+        $locales = \samson\core\SamsonLocale::get();
+
+        // Set current locale as first value of array
+        $localArray = array(locale());
+
+        // Iterate all locales
+        foreach($locales as $local) {
+
+            // Avoid current locale
+            if ($local == locale()) {
+                continue;
+            }
+
+            $localArray[] = $local;
+        }
+
+        // Set locales in the new order
+        \samson\core\SamsonLocale::$locales = $localArray;
+
         // Fill generic tabs
         $this->tabs = array(
             new Main($renderer, $query, $entity),
@@ -35,6 +55,7 @@ class Form extends \samsoncms\form\Form
 
         $this->navigationIDs = dbQuery('structurematerial')->cond('MaterialID', $entity->id)->fields('StructureID');
 
+        // Get all another tabs
         if (sizeof($this->navigationIDs)) {
             $wysiwygFields = dbQuery('field')
                 ->cond('Type', 8)
@@ -48,6 +69,9 @@ class Form extends \samsoncms\form\Form
         }
 
         parent::__construct($renderer, $query, $entity);
+
+        // Set old locales
+        \samson\core\SamsonLocale::$locales = $locales;
 
         // Fire new event after creating form tabs
         Event::fire('samsoncms.material.form.created', array(& $this));
