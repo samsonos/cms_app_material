@@ -70,10 +70,10 @@ class Form extends \samsoncms\form\Form
 
         parent::__construct($renderer, $query, $entity);
 
-        // Set old locales
-        \samson\core\SamsonLocale::$locales = $locales;
-
         // Fire new event after creating form tabs
         Event::fire('samsoncms.material.form.created', array(& $this));
+
+        // Set old locales
+        \samson\core\SamsonLocale::$locales = $locales;
     }
 }
