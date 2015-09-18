@@ -114,8 +114,6 @@ class Main extends \samsoncms\form\tab\Entity
                                             ->first($mf)
                                     ) {
 
-                                        trace('create new item', 1);
-
                                         // Create new materialfield
                                         $mf = new \samson\activerecord\materialfield(false);
 
