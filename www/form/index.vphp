@@ -26,6 +26,7 @@
 			<a class="template-form-btn" id="btnExit" href="<?php module_url()?>" title="<?php t('Закрыть форму не сохраняя материал и вернуться к списку материалов')?>">
                 <?php t('К списку')?>
             </a>
+            <input type="hidden" class="form-save-loader" value="<?php t('Обновление формы') ?>">
 		</div>	
 		<!-- End Controls -->
 </form>

@@ -1,5 +1,5 @@
 <?php
-namespace samsoncms\app\material;
+namespace samsoncms\app\material\form\tab;
 
 use samson\activerecord\dbRelation;
 use samson\core\SamsonLocale;
@@ -10,11 +10,11 @@ use samsonphp\event\Event;
 
 /**
  * Class for rendering SamsonCMS Field table
- * 
+ *
  * @author Nikita Kotenko <nick.w2r@gmail.com>
  * @author Egorov Vitaly <egorov@samsonos.com>
  */
-class FormFieldTable extends \samson\cms\table\Table
+class FieldTabTable extends \samson\cms\table\Table
 {
     /** Change table template */
     public $table_tmpl = 'form/fieldtable/tmpl';
@@ -28,9 +28,6 @@ class FormFieldTable extends \samson\cms\table\Table
     /** Pointer to CMSMaterial */
     private $db_material;
 
-    /** Pointer to Form */
-    private $form;
-
     /** Fields locale */
     private $locale;
 
@@ -40,17 +37,14 @@ class FormFieldTable extends \samson\cms\table\Table
 
     /**
      * Constructor
-     * @param CMSMaterial $db_material CMSMaterial pointer
+     * @param \samson\cms\CMSMaterial $db_material CMSMaterial pointer
      * @param string $locale Field table locale
      */
-    public function __construct(\samson\cms\CMSMaterial & $db_material, Form & $form, $locale = SamsonLocale::DEF)
+    public function __construct(\samson\cms\CMSMaterial & $db_material, $navs, $locale = SamsonLocale::DEF)
     {
         $this->locale = $locale;
 
         $this->dbQuery = new dbQuery();
-
-        // Save pointer to Form
-        $this->form = &$form;
 
         // Save pointer to CMSMaterial
         $this->db_material = &$db_material;
@@ -75,7 +69,6 @@ class FormFieldTable extends \samson\cms\table\Table
         }
 
         // Delete table structures from query
-        $navs = $form->navs;
         foreach ($navs as $key => $nav) {
             if ($nav->type == 2) {
                 unset($navs[$key]);
@@ -120,7 +113,7 @@ class FormFieldTable extends \samson\cms\table\Table
     }
 
     /** @see \samson\cms\site\Table::row() */
-    public function row(&$db_row, Pager &$pager = null, $module = null)
+    public function row(&$db_row, Pager &$pager = null, $renderer = null)
     {
         // Get field metadata
         $db_field = &$db_row->onetoone['_field'];
@@ -129,16 +122,44 @@ class FormFieldTable extends \samson\cms\table\Table
         if (!isset($db_field)) return e('StructureField# ## - Field not found(##)', E_SAMSON_CMS_ERROR, array($db_row->id, $db_row->FieldID));
 
         // Try to get already created materialfield object by field id
-        if (isset($this->materialfields[$db_row->FieldID])) $db_mf = &$this->materialfields[$db_row->FieldID];
+        if (isset($this->materialfields[$db_row->FieldID])) {
+            //trace($this->materialfields[$db_row->FieldID], 1);
+            $db_mf = &$this->materialfields[$db_row->FieldID];
+        }
         // Otherwise create new material field object
         else {
-            //trace('New field for'.$db_field->id);
-            $db_mf = new \samson\activerecord\materialfield(false);
-            $db_mf->locale = $this->locale;
-            $db_mf->Active = 1;
-            $db_mf->MaterialID = $this->db_material->id;
-            $db_mf->FieldID = $db_field->id;
-            $db_mf->save();
+
+            //trace($this->materialfields[$db_row->FieldID], 1);
+
+            //trace('New field for'.$db_field->id, 1);
+
+            $mat = null;
+            // Updatedbyme
+            if (
+                $db_field->local == 0 &&
+                dbQuery('materialfield')
+                    ->cond('FieldID', $db_field->id)
+                    ->cond('MaterialID', $this->db_material->id)
+                    ->cond('locale', 0)
+                    ->first($mat)
+            ) {
+                //trace($mat, 1);die;
+                    $db_mf = $mat;
+            } else {
+
+                $db_mf = new \samson\activerecord\materialfield(false);
+
+                if ($db_field->local == 1) {
+                    $db_mf->locale = $this->locale;
+                } else {
+                    $db_mf->locale = 0;
+                }
+
+                $db_mf->Active = 1;
+                $db_mf->MaterialID = $this->db_material->id;
+                $db_mf->FieldID = $db_field->id;
+                $db_mf->save();
+            }
         }
 
         // Create input element for field
@@ -159,7 +180,7 @@ class FormFieldTable extends \samson\cms\table\Table
         Event::fire('samson.cms.web.material.input', array($db_field, & $input, & $db_mf, & $this->dbQuery));
 
         // Render field row
-        return m('material')
+        return $renderer
             ->view($this->row_tmpl)
             ->cmsfield($input)
             ->matfield($db_mf)
@@ -169,7 +190,7 @@ class FormFieldTable extends \samson\cms\table\Table
             ->output();
     }
 
-    public function render(array $db_rows = null, $module = null)
+    public function render(array $db_rows = null, $renderer = null)
     {
         // Rows HTML
         $rows = '';
@@ -189,7 +210,7 @@ class FormFieldTable extends \samson\cms\table\Table
             // Iterate db data and perform rendering
             foreach ($db_rows as & $db_row) {
                 if ($this->debug) elapsed('Rendering row ' . $rn++ . ' of ' . $rc . '(#' . $db_row->id . ')');
-                $rows .= $this->row($db_row, $this->pager);
+                $rows .= $this->row($db_row, $this->pager, $renderer);
                 //catch(\Exception $e){ return e('Error rendering row#'.$rn.' of '.$rc.'(#'.$db_row->id.')'); }
             }
 
@@ -199,7 +220,7 @@ class FormFieldTable extends \samson\cms\table\Table
         //elapsed('render pages: '.$this->pager->total);
 
         // Render table view
-        return m($module)
+        return $renderer
             ->view($this->table_tmpl)
             ->set($this->pager)
             ->rows($rows)

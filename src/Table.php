@@ -4,8 +4,6 @@ namespace samson\cms\web\material;
 use samson\activerecord\Argument;
 use samson\activerecord\Condition;
 use samson\activerecord\dbRelation;
-use samson\activerecord\dbConditionGroup;
-use samson\activerecord\dbConditionArgument;
 use samson\cms\Navigation;
 use samson\pager\pager;
 use samson\activerecord\dbMySQLConnector;
@@ -105,7 +103,7 @@ class Table extends \samson\cms\table\Table
             $searchQuery->cond($searchCondition);
 
             // Get filtered identifiers
-            $filteredIDs = $searchQuery->fieldsNew('MaterialID');
+            $filteredIDs = $searchQuery->fields('MaterialID');
             $searchOrStructureFlag = true;
         }
 
@@ -146,12 +144,12 @@ class Table extends \samson\cms\table\Table
     }
 
     public function beforeHandler() {
-        $ids = $this->query->fieldsNew('MaterialID');
+        $ids = $this->query->fields('MaterialID');
 
         $this->query = dbQuery('\samson\cms\material')
-                        ->join('user')
-                        ->join('structurematerial')
-                        ->join('samson\cms\Navigation');
+            ->join('user')
+            ->join('structurematerial')
+            ->join('samson\cms\Navigation');
 
         if (sizeof($ids)) {
             $this->query->id($ids);
