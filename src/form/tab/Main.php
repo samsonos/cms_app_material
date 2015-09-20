@@ -38,7 +38,7 @@ class Main extends \samsoncms\form\tab\Entity
      * @param $entityID
      * @param int $locale Load locale fields or not
      */
-    public function loadAdditionalFields($entityID, $locale = 0)
+    public function loadAdditionalFields($entityID, $locale = 0, $structureIds = null)
     {
         /** @var \samsonframework\orm\Record[] $structureIDs Get material entity navigation identifiers */
         $structureIDs = array();
@@ -53,7 +53,7 @@ class Main extends \samsoncms\form\tab\Entity
                 ->cond('field_Type', array('9', '8', '5'), Relation::NOT_EQUAL)// Exclude WYSIWYG & gallery
                 ->cond('field_local', $locale)// Not localized
                 ->cond('Active', 1)// Not deleted
-                ->cond('StructureID', $structureIDs)
+                ->cond('StructureID', $structureIds == null ? $structureIDs : $structureIds)
                 ->join('field')
                 ->group_by('field_FieldID')
                 ->order_by('FieldID', 'ASC')
@@ -74,20 +74,36 @@ class Main extends \samsoncms\form\tab\Entity
                         // If need get not localized fields
                         if ($locale == 0) {
 
-                            // Get values of fields
+                            // If there no materialfield item then create it
                             $mf = null;
-                            if ($this->query->className('materialfield')->cond('FieldID', $field->id)->cond('MaterialID', $entityID)->first($mf)) {
+                            if (
+                            !$this->query->className('materialfield')
+                                ->cond('FieldID', $field->id)
+                                ->cond('MaterialID', $entityID)
+                                ->cond('Active', 1)
+                                ->first($mf)
+                            ) {
 
-                                // Create input field grouped by field identifier
-                                $this->additionalFields[] = new Generic(
-                                    $field->Name,
-                                    isset($field->Description{0}) ? $field->Description : $field->Name,
-                                    $field->Type
-                                );
+                                // Create new materialfield
+                                $mf = new \samson\activerecord\materialfield(false);
 
-                                // Save mf
-                                $this->materialFields[] = $mf;
+                                $mf->locale = '';
+                                $mf->Active = 1;
+                                $mf->MaterialID = $entityID;
+                                $mf->FieldID = $field->id;
+                                $mf->save();
+
                             }
+
+                            // Create input field grouped by field identifier
+                            $this->additionalFields[] = new Generic(
+                                $field->Name,
+                                isset($field->Description{0}) ? $field->Description : $field->Name,
+                                $field->Type
+                            );
+
+                            // Save mf
+                            $this->materialFields[] = $mf;
 
                             // It is localized fields
                         } else {
