@@ -3,7 +3,7 @@ Feature: SamsonCMS material application
   Background:
     Given I am on homepage
     And I log out
-    And I am logged in as "test@test.com" with "123"
+    And I am logged in as "admin@admin.com" with "admin@admin.com"
     And I am on "/material"
     
 
