@@ -47,13 +47,24 @@ class Main extends \samsoncms\form\tab\Entity
             ->cond('Active', 1)
             ->fields('StructureID', $structureIDs)) {
 
+            // Get only structure which not material table
+            $newStructure = null;
+            if (
+                $this->query->className('structure')
+                    ->cond('StructureID', $structureIDs)
+                    ->cond('type', array('2'), Relation::NOT_EQUAL)
+                    ->fields('StructureID', $newStructure)
+            ) {
+                $structureIDs = $newStructure;
+            }
+
             /** @var \samsonframework\orm\Record[] $structureFields Get structure-fields records for this entity with fields data */
             $structureFields = array();
             if($this->query->className('structurefield')
                 ->cond('field_Type', array('9', '8', '5'), Relation::NOT_EQUAL)// Exclude WYSIWYG & gallery
                 ->cond('field_local', $locale)// Not localized
                 ->cond('Active', 1)// Not deleted
-                ->cond('StructureID', $structureIds == null ? $structureIDs : $structureIds)
+                ->cond('StructureID', empty($structureIds) ? $structureIDs : $structureIds)
                 ->join('field')
                 ->group_by('field_FieldID')
                 ->order_by('FieldID', 'ASC')
@@ -69,7 +80,6 @@ class Main extends \samsoncms\form\tab\Entity
                     // If additional field is found
                     $field = & $structureField->onetoone['_field'];
                     if (isset($field)) {
-
 
                         // If need get not localized fields
                         if ($locale == 0) {
