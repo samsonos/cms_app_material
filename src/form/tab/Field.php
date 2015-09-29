@@ -44,8 +44,13 @@ class Field extends Generic
                 }
             }
 
-            $localizedFieldsCount =  dbQuery('structurefield')->join('field')->cond('StructureID', $newStructuresId)->cond('field_local', 1)->cond('field_Type', 5, dbRelation::LOWER)->count();
+            // If there no structures with localized fields then count of localized fields equal 0
+            if (empty($newStructuresId)) {
+                $localizedFieldsCount = 0;
+            } else {
 
+                $localizedFieldsCount =  dbQuery('structurefield')->join('field')->cond('StructureID', $newStructuresId)->cond('field_local', 1)->cond('field_Type', 5, dbRelation::LOWER)->count();
+            }
 
             // If we have not localized fields
             // Don't display the non localized fields
