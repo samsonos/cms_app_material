@@ -218,7 +218,10 @@ class Main extends \samsoncms\form\tab\Entity
         // Iterate all loaded CMSNavs
         $parentSelect = '';
 
-        $navs = dbQuery('structure')->exec();
+        $navs = dbQuery('structure')
+            // Show only visible structures
+            ->cond('visible', 1)
+            ->exec();
 
         // Iterate all structures of this material
         foreach ($navs as $db_structure) {
