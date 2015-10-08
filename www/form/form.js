@@ -1,8 +1,6 @@
 /* Form main JS */
 
-s('.material-structure-selectify').pageInit(selectFunc);
-
-function selectFunc(select) {
+SamsonCMS_InputINIT_SELECT_STRUCTURE = function(select) {
     select.selectify();
 
     initLinks(select.prev());
@@ -32,7 +30,10 @@ function selectFunc(select) {
             }
         });
     }
-}
+};
+
+// Bind input
+SamsonCMS_Input.bind(SamsonCMS_InputINIT_SELECT_STRUCTURE, '.material-structure-selectify');
 
 // Global params
 var timer = 0;
@@ -61,13 +62,7 @@ function updateSelect(){
                     location.hash = '#samsoncms_form_tab_Generic';
                     changeBlock.html(data.form);
                     // Init all tabs
-                    updateTable(s('.material_table_tab'));
-                    initTab();
-                    updateSummernote();
-                    updateWysiwyg(s('.__wysiwyg .__input'));
-                    // Update buttons
                     SamsonCMS_Input.update(s('body'));
-                    selectFunc(s('.material-structure-selectify'));
                     loader.hide();
                     instance = false;
                 }
