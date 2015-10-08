@@ -8,7 +8,7 @@
                 <?php iv('nameSelectStructureField') ?>
             </span>
         </div>
-        <select multiple class="material-structure-selectify" data-href-add="<?php module_url('addnav', 'matId') ?>" data-href-remove="<?php module_url('removenav', 'matId') ?>">
+        <select multiple class="material-structure-selectify" data-update-form="<?php module_url('form','matId'); ?>"  data-id-material="<?php iv('matId'); ?>" data-href-add="<?php module_url('addnav', 'matId') ?>" data-href-remove="<?php module_url('removenav', 'matId') ?>">
             <?php iv('parentSelect') ?>
         </select>
     </div>
