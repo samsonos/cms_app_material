@@ -9,4 +9,6 @@
 
 This module is the core component for all entities in the system.
 
+All SamsonCMS module have build in acceptance tests
+
 [SamsonCMS official web-site](samsoncms.com)
