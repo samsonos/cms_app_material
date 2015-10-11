@@ -220,7 +220,7 @@ class Main extends \samsoncms\form\tab\Entity
 
         $navs = dbQuery('structure')
             // Show only visible structures
-            ->cond('visible', 1)
+            ->cond('hidden', 0)
             ->exec();
 
         // Iterate all structures of this material
