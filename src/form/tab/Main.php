@@ -47,17 +47,6 @@ class Main extends \samsoncms\form\tab\Entity
             ->cond('Active', 1)
             ->fields('StructureID', $structureIDs)) {
 
-            // Get only structure which not material table
-            $newStructure = null;
-            if (
-                $this->query->className('structure')
-                    ->cond('StructureID', $structureIDs)
-                    ->cond('type', array('2'), Relation::NOT_EQUAL)
-                    ->fields('StructureID', $newStructure)
-            ) {
-                $structureIDs = $newStructure;
-            }
-
             /** @var \samsonframework\orm\Record[] $structureFields Get structure-fields records for this entity with fields data */
             $structureFields = array();
             if($this->query->className('structurefield')
@@ -104,16 +93,6 @@ class Main extends \samsoncms\form\tab\Entity
                                 $mf->save();
 
                             }
-
-                            // Create input field grouped by field identifier
-                            $this->additionalFields[] = new Generic(
-                                $field->Name,
-                                isset($field->Description{0}) ? $field->Description : $field->Name,
-                                $field->Type
-                            );
-
-                            // Save mf
-                            $this->materialFields[] = $mf;
 
                             // It is localized fields
                         } else {
@@ -180,11 +159,22 @@ class Main extends \samsoncms\form\tab\Entity
         $this->fields = array(
             new Generic('Name', t('Название', true), 0),
             new Generic('Url', t('Url', true), 0),
-            new Generic('Published', t('Активен', true), 11),
         );
 
         // Call parent constructor to define all class fields
         parent::__construct($renderer, $query, $entity);
+    }
+
+    public function activeButtonRender()
+    {
+        $this->loadAdditionalFields($this->entity->id);
+        $view = '';
+        $field = new Generic('Published', '', 11);
+        $view = '<div class="template-form-input-group activeButton">' . $field->renderHeader($this->renderer);
+        // Render field content
+        $view .= $field->render($this->renderer, $this->query, $this->entity) . '</div>';
+
+        return $view;
     }
 
     /** @inheritdoc */
@@ -192,6 +182,9 @@ class Main extends \samsoncms\form\tab\Entity
     {
         // Load additional fields
         $this->loadAdditionalFields($this->entity->id);
+
+        // shaping active button
+        $this->activeButton = $this->activeButtonRender();
 
         // Iterate all entity fields
         $view = '';
