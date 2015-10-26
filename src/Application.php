@@ -58,7 +58,7 @@ class Application extends \samsoncms\Application
             }
         }
     }
-    
+
     /**
      * Universal controller action.Entity collection rendering.
      *
@@ -137,12 +137,18 @@ class Application extends \samsoncms\Application
         // If we have successfully completed asynchronous action
         if ($response['status']) {
 
+            $activeButton = '';
+            if (isset($response['activeButton'])) {
+                $activeButton = $response['activeButton'];
+            }
+
             // Set title and another params
             $this->title(t('Редактирование', true).' #'.$identifier.' - '.$this->description)
                 ->view('form/index2')
                 ->set($response['entity'], 'entity')    // Pass entity object to view
                 ->set('formContent', $response['form']) // Pass rendered form to view
-                ;
+                ->set('activeButton', $activeButton)
+            ;
 
             return true;
         }
@@ -216,6 +222,9 @@ class Application extends \samsoncms\Application
             // Render form
             $result['form'] = $form->render();
             $result['entity'] = $entity;
+            if (isset($form->tabs[0]->activeButton)) {
+                $result['activeButton'] = $form->tabs[0]->activeButton;
+            }
         }
 
         return $result;
