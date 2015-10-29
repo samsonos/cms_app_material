@@ -1,0 +1,94 @@
+tools:
+  php_sim: true
+  php_pdepend: true
+  php_analyzer: true
+  php_cs_fixer:
+    config: { level: psr2 } # or psr1 if you would just like to get fixes for PSR1
+  php_code_sniffer:
+    config:
+      standard: "PSR2"
+
+filter:
+  excluded_paths:
+    - 'tests/*'
+    - 'features/*'
+    - 'fixtures/*'
+
+build:
+  environment:
+      php:
+        version: 5.4
+      variables:
+          APPLICATION_ENV: test
+      hosts:
+        samsoncms.local: '127.0.0.1'
+      apache2:
+        modules: ['rewrite']
+        sites:
+          samsoncms:
+            web_root: 'www/cms/www/'
+            host: 'samsoncms.local'
+
+  dependencies:
+    before:
+
+       - mysql -uroot -e "CREATE DATABASE samsoncms"
+       - mysql -uroot -e "CREATE USER 'samsoncms'@'localhost' IDENTIFIED BY 'samsoncms'";
+       - mysql -uroot -e "GRANT ALL PRIVILEGES ON *.* TO 'samsoncms'@'localhost' WITH GRANT OPTION";
+       # import mysql data needed for tests
+       - gunzip samsoncms.sql.gz
+       - mysql -uroot samsoncms < samsoncms.sql
+
+
+  project_setup:
+    before:
+      # install SamsonCMS
+      - git clone http://github.com/samsoncms/cms www/cms
+      - cp -R vendor/. www/cms/vendor
+      - cd www/cms
+      - composer install --no-interaction
+      - cd ..
+      - cd ..
+      # as scrutinizer caches only root vendor folder - copy all dependencies back
+      - sudo cp -R www/cms/vendor/. vendor/
+      - command: 'phantomjs --webdriver=8643'
+        background: true
+      # run migrations
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+      - wget http://samsoncms.local
+
+  tests:
+    override:
+      - 'vendor/bin/behat -p scrutinizer'

@@ -1,13 +1,13 @@
 <?php
 namespace samsoncms\app\material;
 
+use samson\activerecord\Condition;
 use samson\core\SamsonLocale;
 use samson\activerecord\dbRelation;
-use samson\activerecord\dbConditionGroup;
-use samson\activerecord\dbConditionArgument;
 use samson\cms\CMSMaterial;
 use samson\activerecord\dbMySQL;
 use samson\activerecord\dbMySQLConnector;
+use samsonframework\orm\Argument;
 
 /**
  * CMSMaterial form 
@@ -62,9 +62,9 @@ class Form
         // Variable to store navigation ids to get fields by them from structurefields
         $navigationForFields = array();
         // Add structure material condition
-        $scg = new dbConditionGroup('or');
-        $scg->arguments[] = new dbConditionArgument(dbMySQLConnector::$prefix . 'structurematerial_Active', 1);
-        $scg->arguments[] = new dbConditionArgument(dbMySQLConnector::$prefix . 'structurematerial_Active', NULL, dbRelation::ISNULL);
+        $scg = new Condition('or');
+        $scg->arguments[] = new Argument(dbMySQLConnector::$prefix . 'structurematerial_Active', 1);
+        $scg->arguments[] = new Argument(dbMySQLConnector::$prefix . 'structurematerial_Active', NULL, dbRelation::ISNULL);
 
         // Perform CMSMaterial request with related CMSNavs
         if (dbQuery(ns_classname('CMSMaterial', 'samson\cms'))
@@ -123,8 +123,8 @@ class Form
             $this->material->Draft = $this->material->id;
             $this->material->Name = 'Новый материал';
             $this->material->Created = date('h:m:i d.m.y');
-//			$this->material->UserID = auth()->user->id;
-            $this->material->UserID = m('social')->user()->UserID;
+//			$this->material->user_id = auth()->user->id;
+            $this->material->user_id = m('social')->user()->user_id;
             $this->material->Active = 1;
             $this->material->save();
             if (isset($parentStructure)) {
@@ -177,7 +177,7 @@ class Form
 
         // Render view
         return m()
-            ->title('Форма')
+            ->title(t('Форма', true))
             ->view('form/index')
             ->cmsmaterial($this->material)
             ->tabs($tabs_html)

@@ -1,17 +1,17 @@
 <li class="template-sub-menu-search">
     <input type="text"
            id="search"
-           controller="<?php module_url('table') ?>"
+           controller="<?php module_url('collection') ?>"
            placeholder="<?php t('Поисковый запрос')?>..."
            value="<?php iv('search')?>"
            name="template-search"
         >
 </li><li class="<?php print(url()->method == '' ? 'active' : '')?>">
-	<a class="sub_menu_a <?php if(isv('all_materials')):?>active<?php endif?>" href="<?php module_url()?>">
+	<a href="<?php module_url()?>">
         <?php t('Список')?>
 	</a>
 </li><li class="<?php print(url()->method == 'form' ? 'active' : '')?>">
-	<a class="sub_menu_a <?php if(isv('new_material')):?>active<?php endif?>" href="<?php module_url( 'form',0,'cmsnav_id');?>">
+	<a href="<?php module_url('new');?>">
 		<?php t('Новый')?>
 	</a>
 </li>
