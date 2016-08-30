@@ -3,12 +3,11 @@ namespace samsoncms\app\material;
 
 use samson\activerecord\dbQuery;
 use samson\activerecord\dbRelation;
-use samson\cms\CMSNavMaterial;
 use samson\pager\Pager;
-use samson\cms\Material;
-use samson\cms\App;
-
-/*use samsonos\cms\ui\MenuItem;*/
+use samsoncms\api\Material;
+use samsoncms\api\NavigationMaterial;
+use samsonframework\orm\ArgumentInterface;
+use samsonphp\event\Event;
 
 /**
  * SamsonCMS generic material application.
@@ -18,199 +17,207 @@ use samson\cms\App;
  *
  * @package samson\cms\web\material
  */
-class Application extends App
+class Application extends \samsoncms\Application
 {
     /** View materials table prefix */
-    const VIEW_TABLE_NAME = 'table';
+    const VIEW_TABLE_NAME = 'collection';
 
     /** Application name */
-    public $name = 'Материалы';
-	
-	// Collection class with specified namespace
-    public $collectionClass = '\samsoncms\app\material\Collection';
+    public $name = 'Материал';
+
+    /** Application description */
+    public $description = 'Материал';
 
     /** Identifier */
     protected $id = 'material';
 
-    /** Table rows count */
-    protected $materialCount = 15;
+    /** Collection page size */
+    protected $pageSize = 15;
 
-    /** Controllers */
+    /** @var string Generic material entity form class */
+    protected $formClassName = '\samsoncms\app\material\form\Form';
 
-    /**
-     * Generic controller
-     *
-     * @param int|null $navigationId Navigation identifier to get it's materials
-     * @param string|null $search Search string to find it's value in material fields
-     * @param int|null $page Page number
-     */
-    public function __handler($navigationId = null, $search = null, $page = null)
+    /** @var array Entity related navigation identifiers */
+    public static $structures = array();
+
+    /** Module initialization */
+    public function init(array $params = array())
     {
-        // Generate localized title
-        $title = t($this->name, true);
-
-        // Set view scope
-        $renderer = $this->view('index');
-
-        // Try to find structure
-        if (isset($navigationId) && dbQuery('\samson\cms\Navigation')->id($navigationId)->first($navigationId)) {
-            // Add structure title
-            $title = t($navigationId->Name, true) . ' - ' . $title;
-
-            // Pass Navigation to view
-            $this->set($navigationId, 'navigation');
-        }
-
-        // Old-fashioned direct search input form POST if not passed
-        $search = !isset($search) ? (isset($_POST['search']) ? $_POST['search'] : '') : $search;
-
-        if (!isset($navigationId)) {
-            $this->set('all_materials', true);
-        }
-        if (is_object($navigationId)) {
-            $navigationId = $navigationId->id;
-        }
-
-        // Set view data
-        $renderer
-            ->title($title)
-            ->set('search', $search)
-            ->set($this->__async_table($navigationId, $search, $page));
+        // Subscribe to input change event
+        \samsonphp\event\Event::subscribe('samson.cms.input.change', array($this, 'inputUpdateHandler'));
     }
 
     /**
-     * Generic material form controller
-     *
-     * @param int|null $materialId Editing material identifier if not null.
-     * If null is passed material creation form will be displayed
-     * @param int|null $navigation Structure material belongs to.
+     * Input field saving handler
+     * @param \samsonframework\orm\Record $object
+     * @param string $param Field
+     * @param string $previousValue Previous object field value
+     * @param string $response Response
      */
-    public function __form($materialId = null, $navigation = null)
+    public function inputUpdateHandler(&$object, $param, $previousValue, &$response)
     {
-        // If this is form for a new material with structure relation
-        if ($materialId == 0 && isset($navigation)) {
-            // Create new material db record
-            $material = new \samson\cms\CMSMaterial(false);
-            $material->Active = 1;
-            $material->Created = date('Y-m-d H:m:s');
-
-            $user = m('social')->user();
-            $material->UserID = $user->user_id;
-            $material->save();
-
-            // Set new material as current
-            $materialId = $material->id;
-
-            // Convert parent CMSNavigation to an array
-            $navigationArray = !is_array($navigation) ? array($navigation) : $navigation;
-
-            // Fill parent CMSNavigation relations for material
-            foreach ($navigationArray as $navigation) {
-                // Create relation with structure
-                $structureMaterial = new \samson\activerecord\structurematerial(false);
-                $structureMaterial->MaterialID = $material->id;
-                $structureMaterial->StructureID = $navigation;
-                $structureMaterial->Active = 1;
-                $structureMaterial->save();
-            }
-        }
-
-        // Create form object
-        $form = new Form($materialId, $navigation);
-
-        if ($materialId == 0) {
-            $this->set('new_material', true);
-        }
-        // Render form
-        $this->html($form->render());
-    }
-
-    /** Main logic */
-
-    /**
-     * Asynchronous controller for form rendering
-     *
-     * @param int|null $materialId Material identifier to build form.
-     * @param int|null $navigation WHY???
-     * @return array Asynchronous controller result
-     */
-    function __async_form($materialId = null, $navigation = null)
-    {
-        // Create form object
-        $form = new Form($materialId);
-
-        // Success
-        return array('status' => true, 'form' => $form->render(), 'url' => $this->id . '/form/' . $materialId);
-    }
-
-    /** Asynchronous controller for material save */
-    function __async_save()
-    {
-        /** @var array $result Asynchronous controller result */
-        $result = array('status' => false);
-
-        // If we have POST data
-        if (isset($_POST)) {
-            // Create empty object
-            /* @var $material \samson\cms\CMSMaterial */
-            $material = new Material(false);
-
-            // If material identifier is passed and it's valid
-            if (isset($_POST['MaterialID']) && $_POST['MaterialID'] > 0) {
-                $material = dbQuery('samson\cms\Material')->id($_POST['MaterialID'])->first();
-            } else { // New material creation
-                // Fill creation ts
-                $material->Created = date('Y-m-d H:m:s');
-                $material->Active = 1;
-            }
-
-            // Set material modification date
-            $material->Modyfied = date('Y-m-d H:m:s');
-            // Make it not draft
-            $material->Draft = 0;
-
-            // Try to find changed information
-            if (isset($_POST['Name'])) {
-                $material->Name = $_POST['Name'];
-            }
-            if (isset($_POST['Published'])) {
-                $material->Published = $_POST['Published'];
-            }
-            if (isset($_POST['type'])) {
-                $material->type = $_POST['type'];
-            }
-            if (isset($_POST['Url'])) {
-                $material->Url = $_POST['Url'];
-            }
-
-            // Save object to DB
-            $material->save();
-
-            /** @var \samson\activerecord\structurematerial $structureMaterial Clear existing
-             * relations between material and structures */
-            foreach (dbQuery('structurematerial')->cond('MaterialID', $material->id)->exec() as $structureMaterial) {
-                $structureMaterial->delete();
-            }
-
-            // Iterate relations between material and structures
-            if (isset($_POST['StructureID'])) {
-                foreach ($_POST['StructureID'] as $structureId) {
-                    // Save record
-                    $sm = new CMSNavMaterial(false);
-                    $sm->MaterialID = $material->id;
-                    $sm->StructureID = $structureId;
-                    $sm->Active = 1;
-                    $sm->save();
+        // If current object is material and we change parameter Name, then change objects Url too if it is empty
+        if ($object instanceof \samson\activerecord\material) {
+            if ($param == 'Name' && $object->Url == '') {
+                $object->Url = utf8_translit($object->Name);
+            } elseif ($param == 'Url') {
+                if ($this->query->entity(\samson\activerecord\material::class)->where('Url', $object->Url)->where('MaterialID', $object->MaterialID, ArgumentInterface::NOT_EQUAL)->first($material)) {
+                    $object->Url = $previousValue;
+                    $response['urlError'] = '<a target="_blank" href="'.url()->build($this->id.'/form/'.$material->id).'">'.t('Материал', true).'</a> '.t('с таким параметром уже существует', true);
                 }
             }
+        }
+    }
 
-            // Success
-            $result['status'] = true;
-            $result[] = $this->__async_form($material->id);
+    public function __async_generateurl($id)
+    {
+        $response = array('status' => 1);
+        /** @var \samson\activerecord\material $material */
+        $material = null;
+        if ($this->query->entity('\samson\activerecord\material')->where('MaterialID', $id)->first($material)) {
+            if ($this->query->entity('\samson\activerecord\material')->where('Url', $material->Url)->where('MaterialID', $material->MaterialID, ArgumentInterface::NOT_EQUAL)->first($existedMaterial)) {
+                $response['urlError'] = '<a target="_blank" href="'.url()->build($this->id.'/form/'.$existedMaterial->id).'">'.t('Материал', true).'</a> '.t('с таким параметром уже существует', true);
+            } else {
+                $material->Url = utf8_translit($material->Name);
+                $material->save();
+                $response['createdUrl'] = $material->Url;
+            }
+        }
+        return $response;
+    }
+
+    /**
+     * Universal controller action.Entity collection rendering.
+     *
+     * @param string $navigationId Navigation filter
+     * @param string $search Search filter
+     * @param int $page Current page
+     */
+    public function __handler($navigationId = '0', $search = '', $page = 1)
+    {
+        // Pass all parameters to parent handler with default values
+        parent::__handler($navigationId, $search, $page);
+    }
+
+    /**
+     * Controller to rendering specific collection
+     *
+     * @param string $navigationId Navigation filter
+     * @param string $search Search filter
+     * @param int $page Current page
+     */
+    public function __collection($navigationId = '0', $search = '', $page = 1)
+    {
+        // Pass all parameters to parent handler with default values
+        parent::__handler($navigationId, $search, $page);
+    }
+
+    /**
+     * New material entity creation controller action
+     * @param int $navigation Parent navigation identifier
+     */
+    public function __new($navigation = array())
+    {
+        // Create new entity
+        $entity = new Material();
+        $entity->Active = 1;
+        $entity->Created = date('Y-m-d H:m:s');
+
+        // Set user
+        $user = $this->system->module('social')->user();
+
+        if (isset($user->user_id)) {
+            $entity->UserID = $user->userId;
+        }
+        else {
+            $entity->UserID = '1';
         }
 
-        // Fail
-        return $result;
+        // Persist
+        $entity->save();
+
+        // Set name for created material
+        $entity->Name = t($this->name, true).' №'.$entity->id;
+        $entity->Url = utf8_translit($entity->Name);
+
+        // Check unique url for material
+        if ($this->query->entity(Material::class)->where(Material::F_IDENTIFIER, utf8_translit($entity->Name))->first()) {
+            $entity->Url = md5(utf8_translit($entity->Name));
+        }
+
+        // Persist
+        $entity->save();
+
+        Event::fire('samsoncms.app.material.new', array(&$entity));
+
+        $navigation = is_array($navigation) ? $navigation : array($navigation);
+
+        // Set navigation relation
+        foreach (array_merge($navigation, static::$structures) as $structureID) {
+            // Create relation with structure
+            $structureMaterial = new NavigationMaterial();
+            $structureMaterial->MaterialID = $entity->id;
+            $structureMaterial->StructureID = $structureID;
+            $structureMaterial->Active = '1';
+            $structureMaterial->save();
+        }
+
+        // Go to correct form URL
+        url()->redirect($this->system->module('cms')->baseUrl . '/' . $this->id . '/form/' . $entity->id);
+    }
+
+    /**
+     * Delete structure from entity
+     * @param int $navigation Parent navigation identifier
+     */
+    public function __async_removenav($materialId = null, $navigation = null)
+    {
+        $structureMaterials = dbQuery('structurematerial')->cond('MaterialID', $materialId)->cond('StructureID', $navigation)->first();
+        $structureMaterials->delete();
+    }
+
+    /**
+     * Add new structure to entity
+     * @param int $navigation Parent navigation identifier
+     */
+    public function __async_addnav($materialId = null, $navigation = null)
+    {
+        // Save record
+//        $sm = new CMSNavMaterial(false);
+        $sm = new NavigationMaterial();
+        $sm->MaterialID = $materialId;
+        $sm->StructureID = $navigation;
+        $sm->Active = '1';
+        $sm->save();
+    }
+
+    /** @inheritdoc */
+    public function __form($identifier)
+    {
+        // Call asynchronous controller action
+        $response = $this->__async_form($identifier);
+
+        // If we have successfully completed asynchronous action
+        if ($response['status']) {
+
+            $activeButton = '';
+            if (isset($response['activeButton'])) {
+                $activeButton = $response['activeButton'];
+            }
+
+            // Set title and another params
+            $this->title(t('Редактирование', true).' #'.$identifier.' - '.$this->description)
+                ->view('form/index2')
+                ->set($response['entity'], 'entity')    // Pass entity object to view
+                ->set($response['form'], 'formContent') // Pass rendered form to view
+                ->set($activeButton, 'activeButton')
+            ;
+
+            return true;
+        }
+
+        // Controller action have failed
+        return A_FAILED;
     }
 
     /**
@@ -222,36 +229,81 @@ class Application extends App
      * @return array Asynchronous response containing status and materials list with pager on success
      * or just status on asynchronous controller failure
      */
-    public function __async_table($navigationId = '0', $search = '', $page = 1)
+    public function __async_collection($navigationId = '0', $search = '0', $page = 1)
     {
-        // Set filtration info
-        $navigationId = isset($navigationId ) ? $navigationId : '0';
-        $search = !empty($search) ? $search  : 0;
-        $page = isset($page ) ? $page : 1;
+        // Save pager size in session
+        if (isset($_GET['pagerSize'])) {
+            $_SESSION['pagerSize'] = str_replace('/', '', $_GET['pagerSize']);
+            // delete get parameter from pager links
+            unset($_GET['pagerSize']);
+        }
 
-        // We must always receive at least one navigataion id to filter materials
-        $navigationIds = isset($navigationId) && !empty($navigationId)
-            ? array($navigationId)
-            : dbQuery('structure')->fieldsNew('StructureID'); // Use all navigation entities as filter
+        // Save search filter
+        if (isset($_GET['search'])) {
+            $_SESSION['search'] = str_replace('/', '', $_GET['search']);
+            $search = str_replace('/', '', $_GET['search']);
+            unset($_GET['search']);
+        }
+
+        // Set filtration info
+        $navigationId = isset($navigationId) ? $navigationId : '0';
+        $search = !empty($search) ? urldecode($search) : 0;
+        $page = isset($page) ? $page : 1;
+
 
         // Create pager for material collection
         $pager = new Pager(
             $page,
-            $this->materialCount,
-            $this->id . '/'.self::VIEW_TABLE_NAME.'/' . $navigationId . '/' . $search
+            isset($_SESSION['pagerSize']) ? $_SESSION['pagerSize'] : $this->pageSize, $this->id . '/' . self::VIEW_TABLE_NAME . '/' . $navigationId . '/' . $search
         );
 
         // Create material collection
         $collection = new $this->collectionClass($this, new dbQuery(), $pager);
 
+        // Add navigation filter
+        if (isset($navigationId) && !empty($navigationId)) {
+            $collection = $collection->navigation(array($navigationId));
+        }
+
         return array_merge(
-            array('status' => 1),
+            array(
+                'status' => true,
+                'navigationId' => $navigationId,
+                'searchQuery' => $search,
+                'pageNumber' => $page,
+                'rowsCount' => $collection->search($search)->fill()->getSize()
+            ),
             $collection
-                ->navigation($navigationIds)
                 ->search($search)
-                ->fill()
+				->fill()
                 ->toView(self::VIEW_TABLE_NAME . '_')
         );
+    }
+
+    /**
+     * Asynchronous material entity form rendering action
+     * @param int $identifier Material entity identifier
+     * @return array Asynchronous response array
+     */
+    public function __async_form($identifier = null)
+    {
+        $result = array('status' => false);
+
+        // Try to find entity
+        $entity = null;
+        if ($this->findAsyncEntityByID($identifier, $entity, $result)) { // Try to find
+            // Build form for entity
+            $form = new $this->formClassName($this, $this->query->className($this->entity), $entity);
+            //elapsed('rendering form');
+            // Render form
+            $result['form'] = $form->render();
+            $result['entity'] = $entity;
+            if (isset($form->tabs[0]->activeButton)) {
+                $result['activeButton'] = $form->tabs[0]->activeButton;
+            }
+        }
+
+        return $result;
     }
 
     /**
@@ -262,57 +314,58 @@ class Application extends App
      */
     public function __async_publish($materialId)
     {
-        /** @var Material $material SamsonCMS Material object */
-        $material = null;
         /** @var array $result Asynchronous controller result */
         $result = array('status' => false);
+        /** @var Entity $material SamsonCMS Material object */
+        $material = null;
 
-        // Get material safely
-        if (dbQuery('\samson\cms\Material')->id($materialId)->first($material)) {
+        // Call default async action
+        if ($this->findAsyncEntityByID($materialId, $material, $result)) {
             // Toggle material published status
             $material->Published = $material->Published ? 0 : 1;
 
             // Save changes to DB
             $material->save();
-
-            // Действие не выполнено
-            $result['status'] = true;
-        } else { // Return error array
-            $result['message'] = 'Material "' . $materialId . '" not found';
         }
+
         // Return asynchronous result
         return $result;
     }
 
     /**
      * Delete material
-     * 
+     *
      * @param mixed $materialId Pointer to material object or material identifier
      * @return array Operation result data
      */
-    function __async_remove($materialId)
+    public function __async_remove($materialId)
     {
-        /** @var Material $material */
+        /** @var Entity $material */
         $material = null;
         /** @var array $result Asynchronous controller result */
         $result = array('status' => false);
 
-        // Get material safely
-        if (dbQuery('\samson\cms\Material')->id($materialId)->first($material)) {
+        // Call default async action
+        if ($this->findAsyncEntityByID($materialId, $material, $result, '\samsoncms\api\Material')) {
             // Mark material as deleted
-            $material->Active = 0;
-
-            // Save changes to DB
-            $material->save();
-
-            // Set success event status
-            $result['status'] = true;
-        } else {
-            // Return error array
-            $result['message'] = 'Material "' . $materialId . '" not found';
+            $material->remove();
+            return $this->__async_collection();
         }
+
         // Return asynchronous result
         return $result;
+    }
+
+    /**
+     * Delete material
+     *
+     * @param mixed $materialId Pointer to material object or material identifier
+     * @return array Operation result data
+     * @deprecated use __async_remove
+     */
+    public function __async_removeentity($materialId)
+    {
+        return $this->__async_remove($materialId);
     }
 
     /**
@@ -321,50 +374,112 @@ class Application extends App
      * @param mixed $materialId Pointer to material object or material identifier
      * @return array Operation result data
      */
-    function __async_copy($materialId)
+    public function __async_copy($materialId)
     {
         /** @var array $result Asynchronous controller result */
         $result = array('status' => false);
-        /** @var \samson\cms\Material $material Material object to copy */
+        /** @var Entity $material Material object to copy */
         $material = null;
 
-        // Get material safely
-        if (dbQuery('\samson\cms\Material')->id($materialId)->first($material)) {
+        // Call default async action
+        if ($this->findAsyncEntityByID($materialId, $material, $result)) {
             // Copy found material
             $material->copy();
-            // Set success status
-            $result['status'] = true;
-        } else {  // Set error message
-            $result['message'] = 'Material "' . $materialId . '" not found';
         }
 
         // Return asynchronous result
         return $result;
     }
 
+    /**
+     * Get current materials in csv format
+     * @param Int $structureId if not set navigation id on application
+     * then use default collection with passed id of structure
+     */
+    public function __tocsv($structureId = null){
+
+        // Create pager for material collection
+        $pager = new Pager(0);
+
+        // Get collection
+        $collection = new $this->collectionClass($this, new dbQuery(), $pager);
+
+        // Set navigation
+        if (isset(static::$navigation)) {
+            $collection = $collection->navigation(static::$navigation);
+        } else {
+            $collection = $collection->navigation(array($structureId));
+        }
+        $collection->fill();
+
+        $this->tocsv($collection);
+    }
+
+    /**
+     * Controller to output csv file of all materials for structure
+     * @var $structure
+     * @var string $delimiter Export file delimiter
+     * @var string $fileName Export file name
+     */
+    public function tocsv($collection, $fileName = null, $delimiter = ';')
+    {
+        s()->async(true);
+
+        ini_set('memory_limit', '2048M');
+
+        // Set passed file name or generate it
+        $fileName = $fileName ?: 'Export' . date('dmY') . '.csv';
+
+        // Output file from browser
+        header('Content-Description: File Transfer');
+        header('Content-Type: application/vnd.ms-excel; charset=utf-8');
+        header('Content-Disposition: attachment; filename=' . $fileName);
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+        header('Pragma: public');
+
+        // Write to php temp because php natively support csv files creation
+        $handle = fopen('php://temp', 'r+');
+        //fputs($handle, chr(0xEF) . chr(0xBB) . chr(0xBF)); // UTF-8 BOM
+        foreach ($collection->toArray() as $line) {
+            fputcsv($handle, $line, $delimiter);
+        }
+
+        // Read file from temp
+        rewind($handle);
+        $csv = '';
+        while (!feof($handle)) {
+            $csv .= fread($handle, 8192);
+        }
+        fclose($handle);
+
+        // Convert to Excel readable format
+        echo mb_convert_encoding($csv, 'Windows-1251', 'UTF-8');
+    }
+
     /** Output for main page */
     public function main()
     {
         $mainPageHTML = '';
+        $dbMaterials = array();
 
         // Получим все материалы
         if (
-        dbQuery('samson\cms\cmsmaterial')
+        dbQuery('samsoncms\api\Material')
             ->join('user')
             ->cond('Active', 1)
             ->cond('Draft', 0)
             ->order_by('Created', 'DESC')
-            ->cond('Name', "",dbRelation::NOT_EQUAL)
+            ->cond('Name', "", dbRelation::NOT_EQUAL)
             ->limit(5)
-            ->exec($dbMaterials)) {
-
-
+            ->exec($dbMaterials)
+        ) {
             // Render material rows
             $rowsHTML = '';
             foreach ($dbMaterials as $dbMaterial) {
                 $rowsHTML .= $this->view('main/row')
                     ->set($dbMaterial, 'material')
-                    ->set($dbMaterial->onetoone['_user'], 'user')
+                    ->set(isset($dbMaterial->onetoone['_user']) ? $dbMaterial->onetoone['_user'] : array(), 'user')
                     ->output();
             }
 
@@ -373,8 +488,9 @@ class Application extends App
             }
 
             // Render main template
-            $mainPageHTML = $this->view('main/index')->set('rows', $rowsHTML)->output();
+            $mainPageHTML = $this->view('main/index')->set($rowsHTML, 'rows')->output();
         }
+
         // Return material block HTML on main page
         return $mainPageHTML;
     }
